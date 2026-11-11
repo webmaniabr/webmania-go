@@ -1,0 +1,1617 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Webmania API2 documented fiscal file delivery",
+    "version": "0.2.0-draft.20261025",
+    "description": "Sixteen documented file URLs across NFSe, CT-e/CT-e OS and correction events, MDF-e, NFCom and DC-e. These return media and optional redirects/pending JSON, not the issuer JSON envelope. Explicit access choices are server alternatives, not SDK fallback behavior."
+  },
+  "servers": [
+    {
+      "url": "https://api.webmania.com.br"
+    }
+  ],
+  "paths": {
+    "/xmlnfse/{identifier}": {
+      "get": {
+        "operationId": "fileGetNfseXml",
+        "summary": "fileGetNfseXml",
+        "tags": [
+          "Emissor Fiscal document files",
+          "nfse"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileUuid"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-nfse/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "records_access_and_may_fetch_missing_event_file",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    },
+    "/nfse/{identifier}": {
+      "get": {
+        "operationId": "fileGetNfsePdf",
+        "summary": "fileGetNfsePdf",
+        "tags": [
+          "Emissor Fiscal document files",
+          "nfse"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileUuid"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "description": "Browser iframe page; do not parse as PDF bytes or execute it in an SDK."
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/FiscalFileError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/NfsePdfPending"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "NFSe PDF can redirect to its DARPS document. Return Location as a result; do not forward credentials automatically.",
+            "headers": {
+              "Location": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-nfse/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "may_enqueue_municipal_pdf_download_render_and_persist_pdf",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    },
+    "/darps/{identifier}": {
+      "get": {
+        "operationId": "fileGetNfseRpsPdf",
+        "summary": "fileGetNfseRpsPdf",
+        "tags": [
+          "Emissor Fiscal document files",
+          "nfse"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileUuid"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "description": "Browser iframe page; do not parse as PDF bytes or execute it in an SDK."
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-nfse/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "may_generate_or_persist_pdf_and_record_access",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    },
+    "/xmlcte/{identifier}": {
+      "get": {
+        "operationId": "fileGetCteXml",
+        "summary": "fileGetCteXml",
+        "tags": [
+          "Emissor Fiscal document files",
+          "cte"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileIdentifier"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-cte/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "records_access_and_may_fetch_missing_event_file",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    },
+    "/xmlcte/{identifier}/cancelamento": {
+      "get": {
+        "operationId": "fileGetCteCancelXml",
+        "summary": "fileGetCteCancelXml",
+        "tags": [
+          "Emissor Fiscal document files",
+          "cte"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileIdentifier"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-cte/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "records_access_and_may_fetch_missing_event_file",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    },
+    "/dacte/{identifier}": {
+      "get": {
+        "operationId": "fileGetCtePdf",
+        "summary": "fileGetCtePdf",
+        "tags": [
+          "Emissor Fiscal document files",
+          "cte"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileIdentifier"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "description": "Browser iframe page; do not parse as PDF bytes or execute it in an SDK."
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-cte/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "may_generate_or_persist_pdf_and_record_access",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    },
+    "/xmlcce/{identifier}": {
+      "get": {
+        "operationId": "fileGetCteCorrectionXml",
+        "summary": "fileGetCteCorrectionXml",
+        "tags": [
+          "Emissor Fiscal document files",
+          "cte"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileIdentifier"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-cte/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "records_access_and_may_fetch_missing_event_file",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    },
+    "/dacce/{identifier}": {
+      "get": {
+        "operationId": "fileGetCteCorrectionPdf",
+        "summary": "fileGetCteCorrectionPdf",
+        "tags": [
+          "Emissor Fiscal document files",
+          "cte"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileIdentifier"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "description": "Browser iframe page; do not parse as PDF bytes or execute it in an SDK."
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-cte/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "may_generate_or_persist_pdf_and_record_access",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    },
+    "/xmlmdfe/{identifier}": {
+      "get": {
+        "operationId": "fileGetMdfeXml",
+        "summary": "fileGetMdfeXml",
+        "tags": [
+          "Emissor Fiscal document files",
+          "mdfe"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileIdentifier"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-mdfe/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "records_access_and_may_fetch_missing_event_file",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "The public MDF-e guide explicitly excludes encrypted query-token and anonymous delivery; those modes are not offered for MDF-e files."
+      }
+    },
+    "/damdfe/{identifier}": {
+      "get": {
+        "operationId": "fileGetMdfePdf",
+        "summary": "fileGetMdfePdf",
+        "tags": [
+          "Emissor Fiscal document files",
+          "mdfe"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileIdentifier"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "description": "Browser iframe page; do not parse as PDF bytes or execute it in an SDK."
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-mdfe/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "may_generate_or_persist_pdf_and_record_access",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "The public MDF-e guide explicitly excludes encrypted query-token and anonymous delivery; those modes are not offered for MDF-e files."
+      }
+    },
+    "/xmlnfcom/{identifier}": {
+      "get": {
+        "operationId": "fileGetNfcomXml",
+        "summary": "fileGetNfcomXml",
+        "tags": [
+          "Emissor Fiscal document files",
+          "nfcom"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileIdentifier"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-nfcom/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "records_access_and_may_fetch_missing_event_file",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    },
+    "/xmlnfcom/{identifier}/cancelamento": {
+      "get": {
+        "operationId": "fileGetNfcomCancelXml",
+        "summary": "fileGetNfcomCancelXml",
+        "tags": [
+          "Emissor Fiscal document files",
+          "nfcom"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileIdentifier"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-nfcom/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "records_access_and_may_fetch_missing_event_file",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    },
+    "/danfecom/{identifier}": {
+      "get": {
+        "operationId": "fileGetNfcomPdf",
+        "summary": "fileGetNfcomPdf",
+        "tags": [
+          "Emissor Fiscal document files",
+          "nfcom"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileIdentifier"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "description": "Browser iframe page; do not parse as PDF bytes or execute it in an SDK."
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-nfcom/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "may_generate_or_persist_pdf_and_record_access",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    },
+    "/xmldce/{identifier}": {
+      "get": {
+        "operationId": "fileGetDceXml",
+        "summary": "fileGetDceXml",
+        "tags": [
+          "Emissor Fiscal document files",
+          "dce"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileIdentifier"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-dce/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "records_access_and_may_fetch_missing_event_file",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    },
+    "/xmldce/{identifier}/cancelamento": {
+      "get": {
+        "operationId": "fileGetDceCancelXml",
+        "summary": "fileGetDceCancelXml",
+        "tags": [
+          "Emissor Fiscal document files",
+          "dce"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileIdentifier"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-dce/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "records_access_and_may_fetch_missing_event_file",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    },
+    "/dace/{identifier}": {
+      "get": {
+        "operationId": "fileGetDcePdf",
+        "summary": "fileGetDcePdf",
+        "tags": [
+          "Emissor Fiscal document files",
+          "dce"
+        ],
+        "security": [
+          {
+            "FiscalFileCompanyBearer": []
+          },
+          {
+            "FiscalDocumentLinkToken": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiscalFileIdentifier"
+            },
+            "description": "Existing fiscal document identifier, preserved as a string. CC-e routes identify the correction event. Do not guess unrelated customer identifiers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Select representation by actual Content-Type and status. JSON, PDF, XML, ZIP and HTML are distinct results; HTTP 200 alone does not mean a file was returned.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "description": "Browser iframe page; do not parse as PDF bytes or execute it in an SDK."
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Invalid identifier, unavailable document, cancellation not completed, expired link token, missing recipient or denied company access; status and safe context are preserved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalFileError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-dce/#download-xml-pdf",
+        "x-operation-effects": {
+          "business_mutation": "may_generate_or_persist_pdf_and_record_access",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting. Never retry with another scheme, fall back from rejected Bearer to anonymous, copy an issuer Bearer into the query token or substitute Monitor/reseller credentials. MDF-e supports company Bearer in this SDK contract only.",
+        "x-sdk-transfer-policy": [
+          "Use the fixed public origin and a non-browser SDK User-Agent. Do not execute returned HTML.",
+          "Preserve status, media type, safe headers and raw bytes without JSON decoding, text transcoding or trimming binary content.",
+          "Use bounded response size/timeouts. Distinguish a JSON error or pending result from a successful binary transfer.",
+          "Do not automatically follow a response URL or redirect, or forward authentication to another origin. Query tokens and downloaded fiscal contents are sensitive.",
+          "Do not infer that bytes delivered without explicit credentials are unprotected: recipient password, ambient authorized IP and panel session are server-controlled. Never claim SDK authentication from an ambient-network success."
+        ],
+        "description": "Public guide supports company Bearer, an existing encrypted per-document link token, authorized issuing IP/panel context, and protected anonymous delivery where a recipient exists. XML without established access is returned as password-protected ZIP; PDFs may be password-protected. No recipient means these public/protected modes may be denied."
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "FiscalFileCompanyBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Existing company-scoped API2 Bearer matching the document issuer; its company scope is compared with the document. A Monitor account token or API1 reseller credentials are not substitutes."
+      },
+      "FiscalDocumentLinkToken": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "token",
+        "description": "Existing encrypted per-document sharing token from the documented DFeToken flow, valid 24 hours and unavailable without a recipient. This is not an API Bearer token. Never log its value, generate a replacement implicitly or advertise it for MDF-e."
+      }
+    },
+    "schemas": {
+      "FiscalFileUuid": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$"
+      },
+      "FiscalFileIdentifier": {
+        "anyOf": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$"
+          },
+          {
+            "type": "string",
+            "pattern": "^[0-9]{6}[A-Za-z0-9]{12}[0-9]{26}$"
+          }
+        ]
+      },
+      "FiscalFileError": {
+        "type": "object",
+        "properties": {
+          "error": {},
+          "message": {
+            "type": "string"
+          },
+          "msg": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true,
+        "description": "Functional/file errors may use HTTP 200. A present error field is failure, never file bytes. Redact tokens, credentials and sensitive URL queries in diagnostics."
+      },
+      "NfsePdfPending": {
+        "type": "object",
+        "properties": {
+          "msg": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "msg"
+        ],
+        "additionalProperties": true,
+        "description": "Municipal PDF is still being retrieved. HTTP 200 JSON is a pending result, not a PDF or fiscal authorization. A later explicit read may succeed; no hidden retry loop."
+      }
+    }
+  }
+}

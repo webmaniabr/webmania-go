@@ -1,0 +1,11 @@
+/dist/
+/.cache/
+*.test
+coverage.out
+.env
+__pycache__/
+*.pyc
+
+# macOS metadata
+.DS_Store
+._*

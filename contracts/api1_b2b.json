@@ -1,0 +1,586 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Webmania API1 B2B reseller issuer management",
+    "version": "0.2.0-draft.20261025",
+    "description": "The three operations published in the B2B management guide. Separate credential scope and client from company API1 fiscal operations. No company setup/update route is invented here; updating issuer setup remains a separate company-authenticated fiscal API operation."
+  },
+  "servers": [
+    {
+      "url": "https://webmania.com.br"
+    }
+  ],
+  "paths": {
+    "/api/1/b2b/empresas/": {
+      "post": {
+        "operationId": "b2bV1CreateCompanies",
+        "summary": "Create reseller company slots",
+        "security": [
+          {
+            "ResellerConsumerKey": [],
+            "ResellerConsumerSecret": [],
+            "ResellerAccessToken": [],
+            "ResellerAccessTokenSecret": []
+          }
+        ],
+        "parameters": [],
+        "description": "Requires an eligible authenticated reseller subscription and four reseller-scoped headers. Creates company slots and may affect billing and token provisioning. A batch can fail after earlier slots were created; there is no proven atomicity/idempotency guarantee. Do not automatically retry an uncertain result. Additional cliente/assinatura override fields are not part of the documented public request.",
+        "responses": {
+          "200": {
+            "description": "Successful business result. Additional response fields are preserved. A present error property is a functional failure even at HTTP 200.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ResellerCreatedCompanies"
+                    },
+                    {
+                      "$ref": "#/components/schemas/B2bFunctionalError"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authentication, ownership, plan or business error, possibly HTTP 200. No automatic retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/B2bError"
+                }
+              }
+            }
+          }
+        },
+        "x-operation-effects": {
+          "business_mutation": true,
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-response-sensitive": true,
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-gerencial-b2b/",
+        "x-sensitive-response-policy": "Return successful credential values to the authorized caller. Never log/debug/serialize them implicitly or echo them in errors. HTTP request bodies containing certificates/passwords are also sensitive.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResellerCreateCompaniesRequest"
+              }
+            }
+          }
+        },
+        "x-compatible-route-alias": "/api/1/revenda/empresas/",
+        "x-rate-limit": "Equivalent reseller calls are normally limited to one per second; SDK retries remain disabled."
+      },
+      "get": {
+        "operationId": "b2bV1ListCompanies",
+        "summary": "List reseller-owned companies and their credentials",
+        "security": [
+          {
+            "ResellerConsumerKey": [],
+            "ResellerConsumerSecret": [],
+            "ResellerAccessToken": [],
+            "ResellerAccessTokenSecret": []
+          }
+        ],
+        "parameters": [],
+        "description": "Top-level array with nested credenciais. A missing cached company Bearer triggers a recovery request and token cache write. This GET is not a passive acceptance test on arbitrary company state. When the reseller has no companies the API returns a functional error object, not necessarily an empty array. No public pagination parameters are implemented.",
+        "responses": {
+          "200": {
+            "description": "Successful business result. Additional response fields are preserved. A present error property is a functional failure even at HTTP 200.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ResellerCompanies"
+                    },
+                    {
+                      "$ref": "#/components/schemas/B2bFunctionalError"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authentication, ownership, plan or business error, possibly HTTP 200. No automatic retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/B2bError"
+                }
+              }
+            }
+          }
+        },
+        "x-operation-effects": {
+          "business_mutation": "may_recover_bearer_and_write_cache",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-response-sensitive": true,
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-gerencial-b2b/",
+        "x-sensitive-response-policy": "Return successful credential values to the authorized caller. Never log/debug/serialize them implicitly or echo them in errors. HTTP request bodies containing certificates/passwords are also sensitive.",
+        "x-compatible-route-alias": "/api/1/revenda/empresas/",
+        "x-rate-limit": "Equivalent reseller calls are normally limited to one per second; SDK retries remain disabled."
+      }
+    },
+    "/api/1/b2b/requests/": {
+      "get": {
+        "operationId": "b2bV1GetProcessedRequests",
+        "summary": "Count processed production notes by reseller company",
+        "security": [
+          {
+            "ResellerConsumerKey": [],
+            "ResellerConsumerSecret": [],
+            "ResellerAccessToken": [],
+            "ResellerAccessTokenSecret": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "mes",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(0[1-9]|1[0-2])$"
+            },
+            "description": "Defaults independently to the current server month."
+          },
+          {
+            "name": "ano",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{4}$"
+            },
+            "description": "Only the current server year or its preceding year is accepted. Defaults independently to the current year; historical documentation examples do not override this rolling window."
+          }
+        ],
+        "description": "Counts approved, cancelled and closed documents in production (ambiente=1) for the authenticated reseller companies and selected month/year. These are processed-note counts, not a count of all HTTP calls. Cache/lock writes can occur, but this operation does not issue or change fiscal documents. No pagination.",
+        "responses": {
+          "200": {
+            "description": "Successful business result. Additional response fields are preserved. A present error property is a functional failure even at HTTP 200.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ResellerProcessedRequests"
+                    },
+                    {
+                      "$ref": "#/components/schemas/B2bFunctionalError"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authentication, ownership, plan or business error, possibly HTTP 200. No automatic retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/B2bError"
+                }
+              }
+            }
+          }
+        },
+        "x-operation-effects": {
+          "business_mutation": false,
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": true
+        },
+        "x-response-sensitive": false,
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-gerencial-b2b/",
+        "x-compatible-route-alias": "/api/1/revenda/requests/",
+        "x-rate-limit": "Equivalent reseller calls are normally limited to one per second; SDK retries remain disabled.",
+        "x-runtime-constraints": {
+          "mes": {
+            "default": "current server month",
+            "canonical_format": "two-digit month 01..12"
+          },
+          "ano": {
+            "default": "current server year",
+            "allowed": [
+              "current server year",
+              "current server year minus one"
+            ],
+            "clock_authority": "server",
+            "historical_documentation_example_is_not_current_fixture": true
+          },
+          "ambiente": "production only; not an exposed query parameter"
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ResellerConsumerKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Consumer-Key",
+        "description": "Reseller/application-user scope only. The identical header name used by the company NFe API does not make those credentials interchangeable."
+      },
+      "ResellerConsumerSecret": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Consumer-Secret",
+        "description": "Reseller/application-user scope only. The identical header name used by the company NFe API does not make those credentials interchangeable."
+      },
+      "ResellerAccessToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Access-Token",
+        "description": "Reseller/application-user scope only. The identical header name used by the company NFe API does not make those credentials interchangeable."
+      },
+      "ResellerAccessTokenSecret": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Access-Token-Secret",
+        "description": "Reseller/application-user scope only. The identical header name used by the company NFe API does not make those credentials interchangeable."
+      }
+    },
+    "schemas": {
+      "B2bError": {
+        "type": "object",
+        "properties": {
+          "error": {},
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true,
+        "description": "A present error property is a functional failure, including HTTP 200. Preserve HTTP status and redact secrets from all failure diagnostics."
+      },
+      "ResellerCreateCompaniesRequest": {
+        "type": "object",
+        "properties": {
+          "quantidade": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "additionalProperties": true,
+        "description": "Create 1 through 100 company slots on the authenticated reseller subscription. Values greater than 100 are rejected even though the error message says less than 100. Public JSON input is an integer; legacy digit stripping is not a recommendation to send malformed strings.",
+        "required": [
+          "quantidade"
+        ]
+      },
+      "ResellerCompanyCredentials": {
+        "type": "object",
+        "properties": {
+          "consumer_key": {
+            "type": "string",
+            "description": "Company-scoped credential returned to the authorized reseller; empty values can mean pending setup.",
+            "x-sensitive": true
+          },
+          "consumer_secret": {
+            "type": "string",
+            "description": "Company-scoped credential returned to the authorized reseller; empty values can mean pending setup.",
+            "x-sensitive": true
+          },
+          "access_token": {
+            "type": "string",
+            "description": "Company-scoped credential returned to the authorized reseller; empty values can mean pending setup.",
+            "x-sensitive": true
+          },
+          "access_token_secret": {
+            "type": "string",
+            "description": "Company-scoped credential returned to the authorized reseller; empty values can mean pending setup.",
+            "x-sensitive": true
+          },
+          "bearer_access_token": {
+            "type": "string",
+            "description": "Company-scoped credential returned to the authorized reseller; empty values can mean pending setup.",
+            "x-sensitive": true
+          },
+          "bearer_access_token_status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "pending"
+            ]
+          },
+          "bearer_access_token_pending": {
+            "type": "boolean"
+          },
+          "direct_link_login": {
+            "type": "string",
+            "description": "Sensitive login URL containing a Bearer token; present only for eligible accounts.",
+            "x-sensitive": true
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "consumer_key",
+          "consumer_secret",
+          "access_token",
+          "access_token_secret",
+          "bearer_access_token"
+        ]
+      },
+      "ResellerCreatedCompany": {
+        "type": "object",
+        "properties": {
+          "consumer_key": {
+            "type": "string",
+            "description": "Company-scoped credential returned to the authorized reseller; empty values can mean pending setup.",
+            "x-sensitive": true
+          },
+          "consumer_secret": {
+            "type": "string",
+            "description": "Company-scoped credential returned to the authorized reseller; empty values can mean pending setup.",
+            "x-sensitive": true
+          },
+          "access_token": {
+            "type": "string",
+            "description": "Company-scoped credential returned to the authorized reseller; empty values can mean pending setup.",
+            "x-sensitive": true
+          },
+          "access_token_secret": {
+            "type": "string",
+            "description": "Company-scoped credential returned to the authorized reseller; empty values can mean pending setup.",
+            "x-sensitive": true
+          },
+          "bearer_access_token": {
+            "type": "string",
+            "description": "Company-scoped credential returned to the authorized reseller; empty values can mean pending setup.",
+            "x-sensitive": true
+          },
+          "bearer_access_token_status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "pending"
+            ]
+          },
+          "bearer_access_token_pending": {
+            "type": "boolean"
+          },
+          "direct_link_login": {
+            "type": "string",
+            "description": "Sensitive login URL containing a Bearer token; present only for eligible accounts.",
+            "x-sensitive": true
+          },
+          "id": {
+            "type": "integer"
+          },
+          "bearer_access_token_recovery_queued": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "bearer_access_token_recovery_queue_status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true,
+        "description": "The company slot can exist while API2 Bearer recovery remains pending. Empty Bearer is not permission to substitute reseller or company API1 credentials.",
+        "required": [
+          "id",
+          "consumer_key",
+          "consumer_secret",
+          "access_token",
+          "access_token_secret",
+          "bearer_access_token"
+        ]
+      },
+      "ResellerCreatedCompanies": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ResellerCreatedCompany"
+        },
+        "minItems": 1,
+        "maxItems": 100
+      },
+      "ResellerCompany": {
+        "type": "object",
+        "properties": {
+          "cnpj": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "cpf": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "razao_social": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nome_completo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "cidade": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "estado": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ie": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "integer"
+          },
+          "unidade_empresa": {
+            "type": [
+              "integer",
+              "string",
+              "null"
+            ]
+          },
+          "tipo_tributacao": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "credenciais": {
+            "$ref": "#/components/schemas/ResellerCompanyCredentials"
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "id",
+          "credenciais"
+        ]
+      },
+      "ResellerCompanies": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ResellerCompany"
+        }
+      },
+      "ResellerCompanyProcessedRequests": {
+        "type": "object",
+        "properties": {
+          "cnpj": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "cpf": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "razao_social": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nome_completo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "cidade": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "estado": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ie": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "integer"
+          },
+          "notas_processadas": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "notas_processadas"
+        ]
+      },
+      "ResellerProcessedRequests": {
+        "type": "object",
+        "properties": {
+          "total_notas_processadas": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "empresas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResellerCompanyProcessedRequests"
+            }
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "total_notas_processadas",
+          "empresas"
+        ]
+      },
+      "B2bFunctionalError": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {},
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true,
+        "description": "Functional failure returned with HTTP 200: the error property is present. Preserve HTTP status and redact secrets."
+      }
+    }
+  }
+}

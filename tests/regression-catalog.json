@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "status": "cross_sdk_regression_catalog_not_an_execution_receipt",
+  "scope": "Emissor Fiscal and Monitor Fiscal only",
+  "purpose": "Carry decisive failures found during independent installed-package reviews into every applicable language qualification. The generic fixture server does not implement this entire catalog automatically.",
+  "execution_rules": [
+    "Use the exact installed package/archive and record its hash/runtime.",
+    "Exercise actual HTTP/TLS loopback and normal typed consumers; do not mock the SDK transport as positive proof.",
+    "Use only synthetic values here. Authorized live fiscal tests have a separate frozen procedure and cleanup ledger.",
+    "Keep negative cases and positive controls; report observed request counts and no-forward/no-replay evidence.",
+    "These cases do not cover every fiscal variant."
+  ],
+  "cases": [
+    {
+      "id": "AUTH-01",
+      "operation_ids": [
+        "fiscalDownloadReport",
+        "b2bV1ListCompanies"
+      ],
+      "title": "Keep credential modes separate",
+      "stimulus": "Exercise company, reseller, issuer, Monitor, document token and public report capability modes; include public report download from a client that also holds company credentials.",
+      "expected": "Only the declared mode sends a request; a public report sends no company/Bearer headers, and no failure causes fallback."
+    },
+    {
+      "id": "HTTP-01",
+      "operation_ids": [
+        "nfeGetSefazStatus"
+      ],
+      "title": "Complete close-delimited responses",
+      "stimulus": "Serve complete Content-Length with Connection:close, HTTP1.0, EOF-delimited and chunked variants; then call again. Also truncate each framed body.",
+      "expected": "Valid complete responses succeed; truncation fails; a subsequent call works without duplicating either request."
+    },
+    {
+      "id": "HTTP-02",
+      "operation_ids": [
+        "nfeGetSefazStatus"
+      ],
+      "title": "Informational status and trailers",
+      "stimulus": "Serve 100/103 then200 and legal chunked trailers; add101, duplicated singleton and ambiguous CL+TE controls.",
+      "expected": "Bounded legal sequences succeed; protocol switch and ambiguous framing fail without another request."
+    },
+    {
+      "id": "HTTP-03",
+      "operation_ids": [
+        "nfeIssueDocument",
+        "nfeCancelDocument",
+        "fileGetNfseXml"
+      ],
+      "title": "No implicit transport replay",
+      "stimulus": "Accept the whole request then close before response headers, on fresh and reused connections, for GET/POST/PUT/DELETE.",
+      "expected": "Exactly one application request per explicit SDK call; errors preserve applicable uncertainty and safe recovery reference."
+    },
+    {
+      "id": "ERR-01",
+      "operation_ids": [
+        "nfeGetSefazStatus"
+      ],
+      "title": "Error discriminators use property presence",
+      "stimulus": "Combine an otherwise valid success shape with error:false/null/zero/empty string/empty array/empty object.",
+      "expected": "Presence of the contract error property is failure; absence with a valid response remains success."
+    },
+    {
+      "id": "ERR-02",
+      "operation_ids": [
+        "fiscalUpdateCompany"
+      ],
+      "title": "Diagnostics collect the actual serialized snapshot",
+      "stimulus": "Put a synthetic private value in an extensible generic field, deeply nested up to the accepted request depth, and in an extensible key. Exercise a custom serializer if supported. Echo these in message/code/field/correlation. Include numeric JSON object property names, distinguish them from list indices, and preserve the actual wire object/list shape.",
+      "expected": "No accepted request value leaks in normal diagnostics. Snapshot serialization is stable; unsafe or excessive input is rejected before dispatch."
+    },
+    {
+      "id": "ERR-03",
+      "operation_ids": [
+        "fiscalDownloadReport"
+      ],
+      "title": "UUID capabilities have contextual equivalence",
+      "stimulus": "Echo an observed report UUID in upper/lower/mixed hexadecimal case; contrast an ordinary password or document token that merely looks like a UUID.",
+      "expected": "Known UUID capabilities are protected across equivalent cases; opaque credentials retain literal case semantics."
+    },
+    {
+      "id": "ERR-04",
+      "operation_ids": [
+        "nfeCancelDocument"
+      ],
+      "title": "Recovery selectors remain usable",
+      "stimulus": "Return uncertain outcome after receiving a safe fiscal UUID/ID; explicitly use the protected retained selector in one consultation. Include credential/capability collision controls.",
+      "expected": "Ordinary diagnostics redact the selector; deliberate recovery uses the original serialized value. Credentials/capabilities are excluded, and no mutation is replayed."
+    },
+    {
+      "id": "ERR-05",
+      "operation_ids": [
+        "fileGetNfseXml",
+        "b2bV1ListCompanies",
+        "monitorGetDocument"
+      ],
+      "title": "Effects are not inferred solely from HTTP verb",
+      "stimulus": "Exercise GET with declared possible effects, conditional Monitor refresh, and passive GET controls under timeout/5xx.",
+      "expected": "Uncertainty follows explicit effect policy and actual send state; passive reads do not inherit mutation claims."
+    },
+    {
+      "id": "REDIR-01",
+      "operation_ids": [
+        "fileGetNfsePdf"
+      ],
+      "title": "Documented file redirect remains usable metadata",
+      "stimulus": "Return the documented302 with absolute and relative Location; add missing/duplicate/malformed Location controls and a second destination observer.",
+      "expected": "Expose valid Location only through deliberate protected access. No implicit fetch, credential forwarding, origin trust or file-ready claim. Invalid or ambiguous metadata fails clearly."
+    },
+    {
+      "id": "REDIR-02",
+      "operation_ids": [
+        "nfeIssueDocument",
+        "nfeCancelDocument"
+      ],
+      "title": "Unexpected redirect after a sent mutation",
+      "stimulus": "After receiving the complete mutation return302/303. Include a passive read control.",
+      "expected": "Keep mutation uncertainty and safe recovery reference; never follow or reissue. Passive reads remain nonmutating."
+    },
+    {
+      "id": "REDIR-03",
+      "operation_ids": [
+        "fileGetNfsePdf",
+        "nfeCancelDocument"
+      ],
+      "title": "Location capability redaction is contextual",
+      "stimulus": "Return a Location with a new UUID in its path and echo an equivalent case in correlation/errors. Contrast an opaque query token shaped like a UUID. Include UUIDs embedded in filenames with prefixes/suffixes, malformed authorities and invalid escapes adjacent to valid encoded UUIDs.",
+      "expected": "Path UUID capabilities do not leak; ordinary opaque query tokens are not silently treated as case-insensitive UUIDs. If header limits abort observation, do not retain a recovery selector that may collide with an unobserved capability; distinguish this from a body-size failure after complete headers."
+    },
+    {
+      "id": "PAGE-01",
+      "operation_ids": [
+        "monitorListCompanies",
+        "monitorListCompanyMunicipalities",
+        "monitorListReports"
+      ],
+      "title": "Offset pagination preserves page size",
+      "stimulus": "Serve a deterministic source of at least80 unique records, request page size50 and total item limit75.",
+      "expected": "Requests keep per_page50; collect exactly the first75 unique records and expose continuation page2/index25, with no redundant page3 request."
+    },
+    {
+      "id": "PAGE-02",
+      "operation_ids": [
+        "monitorListCompanies",
+        "monitorListCompanyMunicipalities",
+        "monitorListReports"
+      ],
+      "title": "Explicit page values are not replaced",
+      "stimulus": "Start above Int32 and test omitted page, explicit null, invalid per_page, nonadvancing metadata and page/item/deadline limits. Return per_page different from the explicit request or first observed page size; contrast a coherent empty final/out-of-range page.",
+      "expected": "Preserve a supported exact starting integer or reject a documented helper limit before I/O; never replace it with page1. Invalid input yields a structured validation error. Incompatible offset metadata must not yield a misleading complete collection."
+    },
+    {
+      "id": "POLL-01",
+      "operation_ids": [
+        "fiscalCreateOrPollReport"
+      ],
+      "title": "Report waits preserve capability context",
+      "stimulus": "First response is processing with UUID/URL/token; next error echoes the bare UUID in another case without the URL. Run independent workflows and an ordinary import control.",
+      "expected": "The same request payload is reused, waits are bounded with interval at least5s, report capabilities remain protected across calls, and context does not leak across workflows."
+    },
+    {
+      "id": "CANCEL-01",
+      "operation_ids": [
+        "nfeIssueDocument"
+      ],
+      "title": "Cancellation preserves sent-operation context",
+      "stimulus": "Interrupt/cancel after the server receives the whole mutation; contrast cancellation while queued before dispatch and a passive read.",
+      "expected": "Preserve applicable operation, uncertainty and safe reference; stop network work, retain runtime interruption semantics and never replay."
+    },
+    {
+      "id": "TYPE-01",
+      "operation_ids": [
+        "monitorCreateCompany",
+        "monitorUpdateCompany"
+      ],
+      "title": "Generated request wrappers do not collide with body components",
+      "stimulus": "Compile and run a normal typed consumer constructing body and path parameters through generated fields/setters; avoid a raw JSON constructor as the only proof.",
+      "expected": "Both operations expose correct wrapper fields and serialize the intended path/body. Audit other operation wrappers for the same naming collision."
+    },
+    {
+      "id": "TYPE-02",
+      "operation_ids": [
+        "nfeCancelDocument"
+      ],
+      "title": "Object compositions retain common typed fields",
+      "stimulus": "Generate common properties/required together with anyOf/oneOf and check positive field access plus invalid typed assignments.",
+      "expected": "Alternatives preserve common typed fields and required constraints. Compilation of a raw JSON escape alone is insufficient."
+    },
+    {
+      "id": "FILE-01",
+      "operation_ids": [
+        "nfeDownloadDanfe",
+        "nfeDownloadXml"
+      ],
+      "title": "MIME does not establish file readiness",
+      "stimulus": "Return HTML/JSON masquerading as PDF/XML; include valid XML prolog/comments, valid PDF controls, protected variants, DTD and response-size bounds.",
+      "expected": "Reject incompatible bytes, preserve valid data and explicit nonfile/protection states, and perform no HTML execution, entity fetch or automatic decryption."
+    },
+    {
+      "id": "ENV-01",
+      "operation_ids": [
+        "nfeGetSefazStatus"
+      ],
+      "title": "Installed package supports an approved HTTPS environment",
+      "stimulus": "Configure an explicit HTTPS service origin/prefix, validate trust/hostname, and test userinfo/query/fragment/dot-segment rejection.",
+      "expected": "Use the configured service without recompiling SDK code; no response URL is automatically trusted and no credentials move to another origin."
+    }
+  ]
+}

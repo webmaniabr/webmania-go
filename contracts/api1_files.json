@@ -1,0 +1,1512 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Webmania fiscal files — draft",
+    "version": "0.2.0-draft.20261025",
+    "description": "Fiscal binary downloads and report capability URLs. Returned customer file origins require explicit caller approval."
+  },
+  "servers": [
+    {
+      "url": "https://nfe.webmania.com.br"
+    },
+    {
+      "url": "https://webmania.com.br/api"
+    }
+  ],
+  "paths": {
+    "/danfe/{identifier}/": {
+      "get": {
+        "operationId": "nfeDownloadDanfe",
+        "summary": "NF-e/NFC-e DANFE",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/AccessKey"
+                }
+              ]
+            }
+          }
+        ],
+        "security": [
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "DocumentToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "company_headers": "Explicitly approved HTTPS origin only; do not automatically trust a host merely because it appears in a response URL.",
+          "redirects": "Never follow with company credentials or document token. Reauthorize a new origin explicitly.",
+          "document_token": "Available only for a document with recipient; token is document-scoped and expires after24hours.",
+          "unauthenticated": "May return password-protected PDF or ZIP; this is not authenticated plaintext download success."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Do not forward credentials or accidentally repeat a quota-consuming operation."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/danfe/{identifier}/"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ]
+      }
+    },
+    "/danfe/simples/{identifier}/": {
+      "get": {
+        "operationId": "nfeDownloadSimpleDanfe",
+        "summary": "NF-e simple DANFE",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/AccessKey"
+                }
+              ]
+            }
+          }
+        ],
+        "security": [
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "DocumentToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "company_headers": "Explicitly approved HTTPS origin only; do not automatically trust a host merely because it appears in a response URL.",
+          "redirects": "Never follow with company credentials or document token. Reauthorize a new origin explicitly.",
+          "document_token": "Available only for a document with recipient; token is document-scoped and expires after24hours.",
+          "unauthenticated": "May return password-protected PDF or ZIP; this is not authenticated plaintext download success."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Do not forward credentials or accidentally repeat a quota-consuming operation."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/danfe/simples/{identifier}/"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ]
+      }
+    },
+    "/danfe/etiqueta/{identifier}/": {
+      "get": {
+        "operationId": "nfeDownloadLabelDanfe",
+        "summary": "NF-e label DANFE",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/AccessKey"
+                }
+              ]
+            }
+          }
+        ],
+        "security": [
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "DocumentToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "company_headers": "Explicitly approved HTTPS origin only; do not automatically trust a host merely because it appears in a response URL.",
+          "redirects": "Never follow with company credentials or document token. Reauthorize a new origin explicitly.",
+          "document_token": "Available only for a document with recipient; token is document-scoped and expires after24hours.",
+          "unauthenticated": "May return password-protected PDF or ZIP; this is not authenticated plaintext download success."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Do not forward credentials or accidentally repeat a quota-consuming operation."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/danfe/etiqueta/{identifier}/"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ]
+      }
+    },
+    "/dacce/{identifier}/": {
+      "get": {
+        "operationId": "nfeDownloadCorrectionPdf",
+        "summary": "CC-e PDF by event UUID or first event",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/AccessKey"
+                }
+              ]
+            }
+          }
+        ],
+        "security": [
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "DocumentToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "company_headers": "Explicitly approved HTTPS origin only; do not automatically trust a host merely because it appears in a response URL.",
+          "redirects": "Never follow with company credentials or document token. Reauthorize a new origin explicitly.",
+          "document_token": "Available only for a document with recipient; token is document-scoped and expires after24hours.",
+          "unauthenticated": "May return password-protected PDF or ZIP; this is not authenticated plaintext download success."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Do not forward credentials or accidentally repeat a quota-consuming operation."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/dacce/{identifier}/"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ]
+      }
+    },
+    "/dacce/{identifier}/{event}/": {
+      "get": {
+        "operationId": "nfeDownloadCorrectionPdfSequence",
+        "summary": "CC-e PDF with sequence",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/AccessKey"
+                }
+              ]
+            }
+          },
+          {
+            "name": "event",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20
+            }
+          }
+        ],
+        "security": [
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "DocumentToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "company_headers": "Explicitly approved HTTPS origin only; do not automatically trust a host merely because it appears in a response URL.",
+          "redirects": "Never follow with company credentials or document token. Reauthorize a new origin explicitly.",
+          "document_token": "Available only for a document with recipient; token is document-scoped and expires after24hours.",
+          "unauthenticated": "May return password-protected PDF or ZIP; this is not authenticated plaintext download success."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Do not forward credentials or accidentally repeat a quota-consuming operation."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/dacce/{identifier}/{event}/"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ]
+      }
+    },
+    "/xmlnfe/{identifier}/": {
+      "get": {
+        "operationId": "nfeDownloadXml",
+        "summary": "NF-e/NFC-e XML",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/AccessKey"
+                }
+              ]
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "const": 1
+            },
+            "description": "Send1to request attachment disposition; omit to leave disabled. Any nonempty text value is treated as enabled, so literal false must not be serialized as false text."
+          }
+        ],
+        "security": [
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "DocumentToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "company_headers": "Explicitly approved HTTPS origin only; do not automatically trust a host merely because it appears in a response URL.",
+          "redirects": "Never follow with company credentials or document token. Reauthorize a new origin explicitly.",
+          "document_token": "Available only for a document with recipient; token is document-scoped and expires after24hours.",
+          "unauthenticated": "May return password-protected PDF or ZIP; this is not authenticated plaintext download success."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Do not forward credentials or accidentally repeat a quota-consuming operation."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/xmlnfe/{identifier}/"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ]
+      }
+    },
+    "/xmlnfe/{identifier}/cancelamento": {
+      "get": {
+        "operationId": "nfeDownloadCancellationXml",
+        "summary": "Cancellation XML",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/AccessKey"
+                }
+              ]
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "const": 1
+            },
+            "description": "Send1to request attachment disposition; omit to leave disabled. Any nonempty text value is treated as enabled, so literal false must not be serialized as false text."
+          }
+        ],
+        "security": [
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "DocumentToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "company_headers": "Explicitly approved HTTPS origin only; do not automatically trust a host merely because it appears in a response URL.",
+          "redirects": "Never follow with company credentials or document token. Reauthorize a new origin explicitly.",
+          "document_token": "Available only for a document with recipient; token is document-scoped and expires after24hours.",
+          "unauthenticated": "May return password-protected PDF or ZIP; this is not authenticated plaintext download success."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Do not forward credentials or accidentally repeat a quota-consuming operation."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/xmlnfe/{identifier}/cancelamento"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ]
+      }
+    },
+    "/xmlcce/{identifier}/": {
+      "get": {
+        "operationId": "nfeDownloadCorrectionXml",
+        "summary": "CC-e XML by event UUID",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/AccessKey"
+                }
+              ]
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "const": 1
+            },
+            "description": "Send1to request attachment disposition; omit to leave disabled. Any nonempty text value is treated as enabled, so literal false must not be serialized as false text."
+          }
+        ],
+        "security": [
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "DocumentToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "company_headers": "Explicitly approved HTTPS origin only; do not automatically trust a host merely because it appears in a response URL.",
+          "redirects": "Never follow with company credentials or document token. Reauthorize a new origin explicitly.",
+          "document_token": "Available only for a document with recipient; token is document-scoped and expires after24hours.",
+          "unauthenticated": "May return password-protected PDF or ZIP; this is not authenticated plaintext download success."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Do not forward credentials or accidentally repeat a quota-consuming operation."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/xmlcce/{identifier}/"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ]
+      }
+    },
+    "/xmlcce/{identifier}/{event}/": {
+      "get": {
+        "operationId": "nfeDownloadCorrectionXmlSequence",
+        "summary": "CC-e XML with sequence",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/AccessKey"
+                }
+              ]
+            }
+          },
+          {
+            "name": "event",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "const": 1
+            },
+            "description": "Send1to request attachment disposition; omit to leave disabled. Any nonempty text value is treated as enabled, so literal false must not be serialized as false text."
+          }
+        ],
+        "security": [
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "DocumentToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "company_headers": "Explicitly approved HTTPS origin only; do not automatically trust a host merely because it appears in a response URL.",
+          "redirects": "Never follow with company credentials or document token. Reauthorize a new origin explicitly.",
+          "document_token": "Available only for a document with recipient; token is document-scoped and expires after24hours.",
+          "unauthenticated": "May return password-protected PDF or ZIP; this is not authenticated plaintext download success."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Do not forward credentials or accidentally repeat a quota-consuming operation."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/xmlcce/{identifier}/{event}/"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ]
+      }
+    },
+    "/xmlmde/{uuid}/": {
+      "get": {
+        "operationId": "nfeDownloadManifestationXml",
+        "summary": "Recipient manifestation XML",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "const": 1
+            },
+            "description": "Send1to request attachment disposition; omit to leave disabled. Any nonempty text value is treated as enabled, so literal false must not be serialized as false text."
+          }
+        ],
+        "security": [
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "DocumentToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "company_headers": "Explicitly approved HTTPS origin only; do not automatically trust a host merely because it appears in a response URL.",
+          "redirects": "Never follow with company credentials or document token. Reauthorize a new origin explicitly.",
+          "document_token": "Available only for a document with recipient; token is document-scoped and expires after24hours.",
+          "unauthenticated": "May return password-protected PDF or ZIP; this is not authenticated plaintext download success."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Do not forward credentials or accidentally repeat a quota-consuming operation."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/xmlmde/{uuid}/"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ]
+      }
+    },
+    "/xmleconf/{identifier}/": {
+      "get": {
+        "operationId": "nfeDownloadPaymentEventXml",
+        "summary": "ECONF XML by event UUID",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/AccessKey"
+                }
+              ]
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "const": 1
+            },
+            "description": "Send1to request attachment disposition; omit to leave disabled. Any nonempty text value is treated as enabled, so literal false must not be serialized as false text."
+          }
+        ],
+        "security": [
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "DocumentToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "company_headers": "Explicitly approved HTTPS origin only; do not automatically trust a host merely because it appears in a response URL.",
+          "redirects": "Never follow with company credentials or document token. Reauthorize a new origin explicitly.",
+          "document_token": "Available only for a document with recipient; token is document-scoped and expires after24hours.",
+          "unauthenticated": "May return password-protected PDF or ZIP; this is not authenticated plaintext download success."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Do not forward credentials or accidentally repeat a quota-consuming operation."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/xmleconf/{identifier}/"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ]
+      }
+    },
+    "/xmleconf/{identifier}/{event}/": {
+      "get": {
+        "operationId": "nfeDownloadPaymentEventXmlSequence",
+        "summary": "ECONF XML with sequence",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Uuid"
+                },
+                {
+                  "$ref": "#/components/schemas/AccessKey"
+                }
+              ]
+            }
+          },
+          {
+            "name": "event",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 99
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "const": 1
+            },
+            "description": "Send1to request attachment disposition; omit to leave disabled. Any nonempty text value is treated as enabled, so literal false must not be serialized as false text."
+          }
+        ],
+        "security": [
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "DocumentToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "company_headers": "Explicitly approved HTTPS origin only; do not automatically trust a host merely because it appears in a response URL.",
+          "redirects": "Never follow with company credentials or document token. Reauthorize a new origin explicitly.",
+          "document_token": "Available only for a document with recipient; token is document-scoped and expires after24hours.",
+          "unauthenticated": "May return password-protected PDF or ZIP; this is not authenticated plaintext download success."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Do not forward credentials or accidentally repeat a quota-consuming operation."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/xmleconf/{identifier}/{event}/"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ]
+      }
+    },
+    "/xmlevento/{uuid}/": {
+      "get": {
+        "operationId": "nfeDownloadIbsCbsEventXml",
+        "summary": "IBS/CBS event XML",
+        "description": "IBS/CBS event XML file. This operation is not available in this SDK release: generated clients expose it as unavailable and send no request.",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "const": 1
+            },
+            "description": "Send1to request attachment disposition; omit to leave disabled. Any nonempty text value is treated as enabled, so literal false must not be serialized as false text."
+          }
+        ],
+        "security": [
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "DocumentToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "company_headers": "Explicitly approved HTTPS origin only; do not automatically trust a host merely because it appears in a response URL.",
+          "redirects": "Never follow with company credentials or document token. Reauthorize a new origin explicitly.",
+          "document_token": "Available only for a document with recipient; token is document-scoped and expires after24hours.",
+          "unauthenticated": "May return password-protected PDF or ZIP; this is not authenticated plaintext download success."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Do not forward credentials or accidentally repeat a quota-consuming operation."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/xmlevento/{uuid}/"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ],
+        "x-sdk-generation-enabled": false
+      }
+    },
+    "/relatorio/{uuid}/": {
+      "get": {
+        "operationId": "fiscalDownloadReport",
+        "summary": "Exported fiscal report",
+        "description": "Download a report exported by the legacy report store. Current exports return a url on the API2 origin (https://api.webmania.com.br/relatorios/{uuid}); download those with fiscalDownloadReportV2 instead. CSV and XLSX files arrive labeled text/xml, so the format is identified from the bytes.",
+        "tags": [
+          "Fiscal files"
+        ],
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Uuid"
+            }
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Binary file when authorized; a JSON error can also occur at HTTP200. CSV and XLSX arrive labeled text/xml. Preserve bytes, Content-Type and safe download metadata.",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary",
+                  "description": "CSV and XLSX legacy reports are sent labeled text/xml. Identify the format from the bytes: a ZIP local-file signature is XLSX, any other report body is CSV kept byte-exact. An XML document, HTML page or JSON error is never a report."
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP/auth/availability failure; never treat HTML/JSON as the requested fiscal file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Api1Error"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-auth-origin-policy": {
+          "capability": "The complete returned report URL/UUID authorizes one exported report and is sensitive. Company headers are unnecessary and must not be attached automatically."
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "Report download consumes a bounded quota (by default 5 downloads per 24 hours). Even a GET must not be blindly replayed."
+        },
+        "x-documentation-url": "https://webmania.com.br/docs/rest-api-nfe/#download-xml-pdf",
+        "x-public-aliases": [
+          "https://webmania.com.br/api/relatorio/{uuid}/"
+        ],
+        "x-sensitive-response-fields": [
+          "url",
+          "token"
+        ],
+        "x-sdk-transfer-policy": "Report files labeled text/xml are CSV or XLSX: XLSX starts with a ZIP local-file signature, any other body is CSV and is returned unchanged. Refuse an XML, HTML or JSON body as a report; a JSON body with error is a failure even at HTTP 200."
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ConsumerKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Consumer-Key"
+      },
+      "ConsumerSecret": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Consumer-Secret"
+      },
+      "AccessToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Access-Token"
+      },
+      "AccessTokenSecret": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Access-Token-Secret"
+      },
+      "DocumentToken": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "token",
+        "description": "Encrypted document-scoped capability, valid24hours. Not a company credential. Never log the URL/token."
+      }
+    },
+    "schemas": {
+      "Uuid": {
+        "type": "string",
+        "minLength": 36,
+        "maxLength": 36,
+        "description": "Opaque provider document/event UUID; preserve case/content."
+      },
+      "AccessKey": {
+        "type": "string",
+        "minLength": 44,
+        "maxLength": 44,
+        "pattern": "^[0-9A-Z]{44}$",
+        "description": "44-character fiscal access key. Keep as text. Alphanumeric issuer identifiers are accepted only when enabled by the provider/environment."
+      },
+      "Api1Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "log": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "cStat": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ]
+                  },
+                  "xMotivo": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": true
+              }
+            ]
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "error"
+        ]
+      }
+    }
+  }
+}

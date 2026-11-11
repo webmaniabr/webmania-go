@@ -1,0 +1,78 @@
+{
+  "generator": "scripts/generate.py v2",
+  "contract_digest": "371a499f74012bb6b41f23642869dee4954e8394dcba7642edc701aedb3dd59e",
+  "operation_count": 103,
+  "model_count": 2284,
+  "inputs": [
+    {
+      "contract": "contracts/api1/fiscal.openapi.json",
+      "module": "api1_fiscal",
+      "sha256": "43712eba9626482c0fafa40915a9b4c0bdf0db32fd71d2c2c4397ad06c3efb42"
+    },
+    {
+      "contract": "contracts/api1/files.openapi.json",
+      "module": "api1_files",
+      "sha256": "4c2a0297f607c115d4fde5528cf25d194ea10ed59d566c5d52880340d1a8cdc1"
+    },
+    {
+      "contract": "contracts/api1/b2b.openapi.json",
+      "module": "api1_b2b",
+      "sha256": "e60db118d379e3183298c15633bda63fc8b753c9967a8679b0dbb85615036f8b"
+    },
+    {
+      "contract": "contracts/api2/cte-issuance.openapi.json",
+      "module": "api2_cte_issuance",
+      "sha256": "57f5baee26677dcb139f2cb10cbe91e7bc7f0f3178a1a91481f469b7fe6811b8"
+    },
+    {
+      "contract": "contracts/api2/dce-issuance.openapi.json",
+      "module": "api2_dce_issuance",
+      "sha256": "c1c8b4e53a31d9f175d0002961915a3b85b320ae9807939ad875b4f724a5f1c5"
+    },
+    {
+      "contract": "contracts/api2/emitter-files.openapi.json",
+      "module": "api2_emitter_files",
+      "sha256": "51ceb9bdfc4b76d0728ee315245686fbb2c4af7a70482b50ff27b28098fbe731"
+    },
+    {
+      "contract": "contracts/api2/emitter-reads.openapi.json",
+      "module": "api2_emitter_reads",
+      "sha256": "43cc01352085f9af97cb68e337dced4022b8beca6b8359642516d9aaa9ed3fda"
+    },
+    {
+      "contract": "contracts/api2/mdfe-issuance.openapi.json",
+      "module": "api2_mdfe_issuance",
+      "sha256": "ba9f4259c1828cd0b8246c633cf5ad818f266e08c08010faa583de91be849d9a"
+    },
+    {
+      "contract": "contracts/api2/monitor-documents.openapi.json",
+      "module": "api2_monitor_documents",
+      "sha256": "50e164f0761ca4d6db1cd908c796daaf3762c526e2496166a0cbcc4d36d63b98"
+    },
+    {
+      "contract": "contracts/api2/monitor-management.openapi.json",
+      "module": "api2_monitor_management",
+      "sha256": "97722cd17779ae6630752df854c0d51878986ac8c909fe7ac8536c1f8ded2c3f"
+    },
+    {
+      "contract": "contracts/api2/monitor-reads.openapi.json",
+      "module": "api2_monitor_reads",
+      "sha256": "eaf603cf14473a17bffb498f064e2f18a016d5eb28964cda86332a3edc34776e"
+    },
+    {
+      "contract": "contracts/api2/nfcom-issuance.openapi.json",
+      "module": "api2_nfcom_issuance",
+      "sha256": "37e97ae269b8a4bcde524fd83e4e4403020050c8a8eb24aef21f247170818a65"
+    },
+    {
+      "contract": "contracts/api2/nfse-issuance.openapi.json",
+      "module": "api2_nfse_issuance",
+      "sha256": "328327d8c3dc41af6373028d1c1f558e5bf9d8951f1bbd563567368021729962"
+    },
+    {
+      "contract": "contracts/api2/reports.openapi.json",
+      "module": "api2_reports",
+      "sha256": "3c6b4938a0b44bc2b8dfef7d5b5e98dd5d5c939c2c5ec3227cf43759ba2a6191"
+    }
+  ]
+}

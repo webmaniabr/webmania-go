@@ -1,0 +1,245 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Webmania API2 fiscal report files — draft",
+    "version": "0.2.0-draft.20261025",
+    "description": "Download of fiscal reports exported by the current report service. fiscalCreateOrPollReport returns a url on this origin for these reports; reports of the legacy store keep using fiscalDownloadReport. Explicit access choices are server alternatives, not SDK fallback behavior."
+  },
+  "servers": [
+    {
+      "url": "https://api.webmania.com.br"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Fiscal report files"
+    }
+  ],
+  "paths": {
+    "/relatorios/{uuid}": {
+      "get": {
+        "operationId": "fiscalDownloadReportV2",
+        "summary": "Exported fiscal report (current report service)",
+        "description": "Downloads a completed report. While the export is processing, after a failed export or when the stored file expired, the response is HTTP 200 JSON with an error property instead of a file. A report UUID that does not exist, or is not a UUID, is not found.",
+        "tags": [
+          "Fiscal report files"
+        ],
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "description": "Report UUID taken from the url returned by fiscalCreateOrPollReport. Never guess or enumerate report identifiers.",
+            "schema": {
+              "$ref": "#/components/schemas/ReportUuid"
+            }
+          }
+        ],
+        "security": [
+          {},
+          {
+            "ConsumerKey": [],
+            "ConsumerSecret": [],
+            "AccessToken": [],
+            "AccessTokenSecret": []
+          },
+          {
+            "ReportCompanyBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File of a completed report, or a JSON error object at HTTP 200. Select the representation by the actual Content-Type and validate the format from the bytes before accepting a file.",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary",
+                  "description": "HTML rendering exported as the report file itself; never execute it."
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary",
+                  "description": "Report file whose stored type is not one of the formats above; validate the bytes before use."
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access refused: credentials were supplied but are incomplete, invalid, inactive or belong to another company, or access without credentials is disabled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown report or an identifier that is not a UUID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportHttpError"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many download requests from this client; wait before a deliberate new attempt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportHttpError"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP or availability failure; never treat HTML or JSON as the requested report file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportHttpError"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-operation-effects": {
+          "business_mutation": "records_access",
+          "automatic_retries": 0,
+          "read_only_acceptance_eligible": false
+        },
+        "x-retry-policy": {
+          "automatic_retries": 0,
+          "reason": "A download is rate limited and records access. Repeat only as a deliberate new request."
+        },
+        "x-sdk-authentication-policy": "Choose one explicit access mode before requesting: no credentials (the report URL is a sensitive capability), the four company API1 headers together, or the company API2 Bearer. Never retry with another scheme after a refusal and never send credentials to an origin other than https://api.webmania.com.br.",
+        "x-auth-origin-policy": {
+          "origin": "https://api.webmania.com.br",
+          "path_prefix": "/relatorios/",
+          "redirects": "Never follow with credentials. Reauthorize a new origin explicitly.",
+          "capability": "The complete report URL authorizes one exported report and is sensitive. Do not log it or attach credentials to a URL outside the approved origin and path prefix."
+        },
+        "x-sdk-transfer-policy": "Preserve status, media type and raw bytes. Accept a file only after its bytes match the declared format (ZIP local-file signature for ZIP and XLSX, a PDF header for PDF, text for CSV, HTML and XML). A JSON body with an error property is a failure even at HTTP 200.",
+        "x-sensitive-response-fields": [
+          "url"
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ConsumerKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Consumer-Key"
+      },
+      "ConsumerSecret": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Consumer-Secret"
+      },
+      "AccessToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Access-Token"
+      },
+      "AccessTokenSecret": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Access-Token-Secret"
+      },
+      "ReportCompanyBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Existing company-scoped API2 Bearer of the company that exported the report. A Monitor account token or API1 reseller credentials are not substitutes."
+      }
+    },
+    "schemas": {
+      "ReportUuid": {
+        "type": "string",
+        "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+        "description": "Report UUID in its canonical 8-4-4-4-12 hexadecimal form."
+      },
+      "ReportError": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true,
+        "description": "Functional or access error. A present error property is always a failure, including HTTP 200."
+      },
+      "ReportHttpError": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "HTTP-level error body (not found, throttled or unavailable). Its fields are not guaranteed; treat any such body as a failure."
+      }
+    }
+  }
+}

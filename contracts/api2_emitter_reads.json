@@ -1,0 +1,1143 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Webmania Emissor Fiscal API2 — read capabilities and NFSe event draft",
+    "version": "0.2.0-draft.20261025",
+    "description": "Six concrete operations. This module covers reads and NFSe events only; model emissions, other events, files and company management live in other modules."
+  },
+  "servers": [
+    {
+      "url": "https://api.webmania.com.br"
+    }
+  ],
+  "paths": {
+    "/2/nfse/status": {
+      "get": {
+        "operationId": "emitterGetNfseProviderStatus",
+        "summary": "Read the company NFSe provider capabilities",
+        "tags": [
+          "Emissor Fiscal API2"
+        ],
+        "security": [
+          {
+            "IssuerBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "todos_servicos",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Option to include all city service codes rather than filtering by company CNAE."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Business response; distinguish fiscal/service status from HTTP success. A present error property is a functional failure even at HTTP 200.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/NfseProviderStatus"
+                    },
+                    {
+                      "$ref": "#/components/schemas/EmitterFunctionalError"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authentication, subscription, fiscal or provider error, possibly with HTTP 200. No automatic retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmitterError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-nfse/#status",
+        "x-operation-effects": {
+          "business_mutation": false,
+          "automatic_retries": 0
+        }
+      }
+    },
+    "/2/nfcom/status": {
+      "get": {
+        "operationId": "emitterGetNfcomServiceStatus",
+        "summary": "Read production SEFAZ NFCom service availability",
+        "tags": [
+          "Emissor Fiscal API2"
+        ],
+        "security": [
+          {
+            "IssuerBearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Business response; distinguish fiscal/service status from HTTP success. A present error property is a functional failure even at HTTP 200.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/NfcomServiceStatus"
+                    },
+                    {
+                      "$ref": "#/components/schemas/EmitterFunctionalError"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authentication, subscription, fiscal or provider error, possibly with HTTP 200. No automatic retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmitterError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "SEFAZ service unavailable; return as an HTTP failure while retaining/redacting safe business context.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NfcomServiceStatus"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-nfcom/#status",
+        "x-operation-effects": {
+          "business_mutation": false,
+          "automatic_retries": 0
+        }
+      }
+    },
+    "/2/nfse/consulta/{identifier}": {
+      "get": {
+        "operationId": "emitterGetNfse",
+        "summary": "Consult a company-owned NFSe or RPS batch",
+        "tags": [
+          "Emissor Fiscal API2"
+        ],
+        "security": [
+          {
+            "IssuerBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "UUID is documented; the API also accepts the original order ID. An access key is not automatically treated as a UUID/order ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Business response; distinguish fiscal/service status from HTTP success. A present error property is a functional failure even at HTTP 200.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/NfseFiscalResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/EmitterFunctionalError"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authentication, subscription, fiscal or provider error, possibly with HTTP 200. No automatic retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmitterError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-nfse/#consultar-nfse",
+        "x-operation-effects": {
+          "business_mutation": "may_process_pending_issue_or_cancellation",
+          "automatic_retries": 0
+        },
+        "description": "Only documents already in a stable approved state can be read passively. Processing/received documents can trigger contingency/receipt processing; processando_cancelamento can trigger a cancellation request. GET alone does not guarantee no fiscal side effects. Never read an arbitrary pending document as if it were a passive check."
+      }
+    },
+    "/2/nfcom/consulta/{identifier}": {
+      "get": {
+        "operationId": "emitterGetNfcom",
+        "summary": "Get a company-owned NFCom",
+        "tags": [
+          "Emissor Fiscal API2"
+        ],
+        "security": [
+          {
+            "IssuerBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?:[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}|[0-9]{6}[A-Za-z0-9]{12}[0-9]{26})$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Business response; distinguish fiscal/service status from HTTP success. A present error property is a functional failure even at HTTP 200.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/NfcomFiscalResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/EmitterFunctionalError"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authentication, subscription, fiscal or provider error, possibly with HTTP 200. No automatic retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmitterError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-nfcom/#consultar-nfcom",
+        "x-operation-effects": {
+          "business_mutation": false,
+          "automatic_retries": 0
+        }
+      }
+    },
+    "/2/nfcom/consulta/evento/{identifier}": {
+      "get": {
+        "operationId": "emitterGetNfcomPaymentEvents",
+        "summary": "Read NFCom payment-event metadata",
+        "tags": [
+          "Emissor Fiscal API2"
+        ],
+        "security": [
+          {
+            "IssuerBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?:[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}|[0-9]{6}[A-Za-z0-9]{12}[0-9]{26})$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Business response; distinguish fiscal/service status from HTTP success. A present error property is a functional failure even at HTTP 200.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/NfcomPaymentEvents"
+                    },
+                    {
+                      "$ref": "#/components/schemas/EmitterFunctionalError"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authentication, subscription, fiscal or provider error, possibly with HTTP 200. No automatic retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmitterError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-nfcom/#consultar-nfcom",
+        "x-operation-effects": {
+          "business_mutation": false,
+          "automatic_retries": 0
+        }
+      }
+    },
+    "/2/nfse/manifestar": {
+      "put": {
+        "operationId": "emitterManifestNfse",
+        "summary": "Manifest participation in a national NFSe",
+        "tags": [
+          "Emissor Fiscal API2"
+        ],
+        "security": [
+          {
+            "IssuerBearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Business response; distinguish fiscal/service status from HTTP success. A present error property is a functional failure even at HTTP 200.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/NfseFiscalResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/EmitterFunctionalError"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authentication, subscription, fiscal or provider error, possibly with HTTP 200. No automatic retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmitterError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-nfse/#manifestar-nfse",
+        "x-operation-effects": {
+          "business_mutation": true,
+          "automatic_retries": 0
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NfseManifestationRequest"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "IssuerBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Existing company API2 Bearer token with issue capability and the required product subscription. Separate from Monitor fdmanagement tokens, API1 four headers and X-Token; never fall back."
+      }
+    },
+    "schemas": {
+      "EmitterError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "boolean"
+          },
+          "configured": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true,
+        "description": "The API can return a functional error in HTTP 200. A present error property is always failure. Redact all service credentials and preserve HTTP status."
+      },
+      "NfseServiceCode": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "descricao": {
+            "type": "string"
+          },
+          "id_cnae": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "codigo_tributacao": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "aliquota_sugerida": {
+            "type": "object",
+            "properties": {
+              "iss": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "codigo",
+          "descricao"
+        ]
+      },
+      "NfseParameterRequirements": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        },
+        "description": "Map from dotted public field paths to requirement labels, including obrigatorio,obrigatorio_pf,obrigatorio_pj,opcional. Additional future labels/fields are preserved; not all providers return this map."
+      },
+      "NfseProviderStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": true
+          },
+          "modelo": {
+            "type": "string"
+          },
+          "versao": {
+            "type": "string"
+          },
+          "ambientes": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "enum": [
+                1,
+                2
+              ]
+            }
+          },
+          "autenticacao": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "emissao": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "funcoes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pdf_nfse": {
+            "type": "boolean"
+          },
+          "pdf_sincrono": {
+            "type": "boolean"
+          },
+          "codigo_servico": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NfseServiceCode"
+            }
+          },
+          "parametros_disponiveis": {
+            "$ref": "#/components/schemas/NfseParameterRequirements"
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "status",
+          "ambientes",
+          "autenticacao",
+          "emissao",
+          "funcoes",
+          "pdf_nfse",
+          "pdf_sincrono"
+        ],
+        "description": "Company/provider capabilities. Successful status=true does not authorize issuing without checking the returned environment/authentication/model/function support. Error status=false responses are functional errors, not a successful capability lookup."
+      },
+      "NfcomServiceStatus": {
+        "type": "object",
+        "properties": {
+          "operacional": {
+            "type": "boolean"
+          },
+          "mensagem": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "operacional",
+          "mensagem"
+        ],
+        "description": "The current service always probes the production SEFAZ environment. Operational=true returns HTTP 200; operational=false returns HTTP 503, preserving the body as failure context. A configured A1 certificate and eligible NFCom subscription are required."
+      },
+      "NfseFiscalResponse": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": "string"
+          },
+          "uuid": {
+            "type": "string"
+          },
+          "modelo": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "chave": {
+            "type": "string"
+          },
+          "numero_lote": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "serie_lote": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "protocolo": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "string"
+          },
+          "codigo_verificacao": {
+            "type": "string"
+          },
+          "serie_rps": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "numero_rps": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "xml": {
+            "type": "string"
+          },
+          "xml_cancelamento": {
+            "type": "string"
+          },
+          "pdf_nfse": {
+            "type": "string"
+          },
+          "pdf_nfse_status": {
+            "type": "string"
+          },
+          "pdf_rps": {
+            "type": "string"
+          },
+          "atualizado_em": {
+            "type": "string"
+          },
+          "motivo": {
+            "type": [
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "quantidade_rps": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "nfse_substituida": {
+            "type": "object",
+            "properties": {
+              "uuid": {
+                "type": "string"
+              },
+              "numero": {
+                "type": "string"
+              },
+              "codigo_verificacao": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          },
+          "info_nfse": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "uuid": {
+                  "type": "string"
+                },
+                "modelo": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "motivo": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "numero": {
+                  "type": "string"
+                },
+                "codigo_verificacao": {
+                  "type": "string"
+                },
+                "xml": {
+                  "type": "string"
+                },
+                "pdf_nfse": {
+                  "type": "string"
+                },
+                "pdf_nfse_status": {
+                  "type": "string"
+                },
+                "pdf_rps": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "log": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              }
+            ],
+            "description": "Provider-specific raw fiscal log; preserve structure and additional fields. Never include unredacted credential values in an exception."
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "uuid",
+          "modelo",
+          "status"
+        ],
+        "description": "Known individual NFSe, batch RPS and manifestation response fields. Empty fields may be omitted; status values include processing/scheduled/approved/rejected/cancelled variants and are preserved as strings. API transport success is not fiscal approval. Files are URLs; lote_rps carries per-note info_nfse. Provider/error variants are not exhaustively modeled."
+      },
+      "NfcomPaymentEvent": {
+        "type": "object",
+        "properties": {
+          "evento": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "codigo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "motivo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "protocolo_evento": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "protocolo_nfcom": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "protocolo_vinculacao": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "data_evento": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "n_seq_evento": {
+            "anyOf": [
+              {
+                "type": [
+                  "integer",
+                  "string"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pagamento": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "nPag": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "idTransacao": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "tpMeioPgto": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "CNPJReceb": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "CNPJBasePSP": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean",
+                      "null"
+                    ]
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": true
+      },
+      "NfcomFiscalResponse": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string"
+          },
+          "chave": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "serie": {
+            "type": [
+              "integer",
+              "string",
+              "null"
+            ]
+          },
+          "nfcom": {
+            "type": [
+              "integer",
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "motivo": {
+            "type": "string"
+          },
+          "modelo": {
+            "const": "nfcom"
+          },
+          "contingencia": {
+            "type": "boolean"
+          },
+          "xml": {
+            "type": "string",
+            "format": "uri"
+          },
+          "danfecom": {
+            "type": "string",
+            "format": "uri"
+          },
+          "xml_cancelamento": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "protocolo": {
+            "type": "string"
+          },
+          "data_autorizacao": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "eventos_pagamento": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NfcomPaymentEvent"
+            }
+          },
+          "total_eventos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "consulta_eventos_pagamento": {
+            "type": "string",
+            "format": "uri"
+          },
+          "log": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "array",
+                    "items": {}
+                  }
+                ],
+                "description": "Provider-specific raw fiscal log; preserve structure and additional fields. Never include unredacted credential values in an exception."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "uuid",
+          "modelo",
+          "status"
+        ],
+        "description": "Fiscal status and URLs for the company-owned NFCom. Additional event/provider details are preserved. Approved and rejected business states can both use HTTP 200."
+      },
+      "NfcomPaymentEvents": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string"
+          },
+          "chave": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "eventos_pagamento": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NfcomPaymentEvent"
+            }
+          },
+          "total_eventos": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "uuid",
+          "status",
+          "eventos_pagamento",
+          "total_eventos"
+        ]
+      },
+      "NfseManifestationRequest": {
+        "type": "object",
+        "properties": {
+          "ambiente": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "enum": [
+              1,
+              2,
+              "1",
+              "2"
+            ]
+          },
+          "chave": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 50,
+            "description": "Nacional NFSe access key, exactly 50 characters; a UUID is not accepted."
+          },
+          "manifestador": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "enum": [
+              1,
+              2,
+              "1",
+              "2"
+            ]
+          },
+          "evento": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "enum": [
+              1,
+              2,
+              "1",
+              "2"
+            ]
+          },
+          "motivo_rejeicao": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              9,
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "9"
+            ]
+          },
+          "justificativa_rejeicao": {
+            "type": "string",
+            "minLength": 15,
+            "maxLength": 255
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "ambiente",
+          "chave",
+          "manifestador",
+          "evento"
+        ],
+        "description": "Padrão Nacional only, valid certificate required. manifestador 1 tomador / 2 intermediary; evento 1 confirmation / 2 rejection. Rejection requires motivo_rejeicao; reason 9 other requires justification. This creates a fiscal event and is excluded from read-only validation.",
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "evento": {
+                  "enum": [
+                    2,
+                    "2"
+                  ]
+                }
+              },
+              "required": [
+                "evento"
+              ]
+            },
+            "then": {
+              "required": [
+                "motivo_rejeicao"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "motivo_rejeicao": {
+                  "enum": [
+                    9,
+                    "9"
+                  ]
+                }
+              },
+              "required": [
+                "motivo_rejeicao"
+              ]
+            },
+            "then": {
+              "required": [
+                "justificativa_rejeicao"
+              ]
+            }
+          }
+        ]
+      },
+      "EmitterFunctionalError": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "boolean"
+          },
+          "configured": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true,
+        "description": "Functional failure returned with HTTP 200 (for example status false with an error message): the error property is present. Redact service credentials and preserve HTTP status."
+      }
+    }
+  }
+}

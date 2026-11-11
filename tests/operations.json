@@ -1,0 +1,3009 @@
+{
+  "contract_digest": "371a499f74012bb6b41f23642869dee4954e8394dcba7642edc701aedb3dd59e",
+  "classification": "synthetic_public_contract_wire_corpus_not_fiscal_acceptance",
+  "cases": [
+    {
+      "operation": "nfeGetCertificateValidity",
+      "client": "Nfe",
+      "method": "get_certificate_validity",
+      "http_method": "GET",
+      "path": "/1/nfe/certificado/",
+      "path_params": {},
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "expiration": 1
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeGetSefazStatus",
+      "client": "Nfe",
+      "method": "get_sefaz_status",
+      "http_method": "GET",
+      "path": "/1/nfe/sefaz/",
+      "path_params": {},
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": "online"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeGetDocument",
+      "client": "Nfe",
+      "method": "get_document",
+      "http_method": "GET",
+      "path": "/1/nfe/consulta/",
+      "path_params": {},
+      "query": {
+        "uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "status": "new_provider_state",
+        "future": false
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeQueryDocument",
+      "client": "Nfe",
+      "method": "query_document",
+      "http_method": "POST",
+      "path": "/1/nfe/consulta/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "chave": "00000000000000000000000000000000000000000000"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "status": "new_provider_state",
+        "future": false
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeCreateCorrection",
+      "client": "Nfe",
+      "method": "create_correction",
+      "http_method": "POST",
+      "path": "/1/nfe/cartacorrecao/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "chave": "00000000000000000000000000000000000000000000",
+        "correcao": "00000000-0000-4000-8000-000000000001"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeCreateManifestation",
+      "client": "Nfe",
+      "method": "create_manifestation",
+      "http_method": "POST",
+      "path": "/1/nfe/manifesta/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "chave": "00000000000000000000000000000000000000000000",
+        "ambiente": 2,
+        "evento": "210240",
+        "justificativa": "The goods were never delivered."
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeCancelDocument",
+      "client": "Nfe",
+      "method": "cancel_document",
+      "http_method": "PUT",
+      "path": "/1/nfe/cancelar/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "chave": "00000000000000000000000000000000000000000000",
+        "motivo": "00000000-0000-4000-8000-000000000001"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeVoidNumbering",
+      "client": "Nfe",
+      "method": "void_numbering",
+      "http_method": "PUT",
+      "path": "/1/nfe/inutilizar/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "sequencia": "00000000",
+        "motivo": "00000000-0000-4000-8000-000000000001",
+        "ambiente": 1,
+        "serie": "0",
+        "modelo": "1"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "xml": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeCreatePaymentEvent",
+      "client": "Nfe",
+      "method": "create_payment_event",
+      "http_method": "POST",
+      "path": "/1/nfe/conciliacao/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "pagamento": {
+          "forma_pagamento": "01",
+          "valor_pagamento": "0.00",
+          "data_pagamento": "2026-10-25"
+        }
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeCancelPaymentEvent",
+      "client": "Nfe",
+      "method": "cancel_payment_event",
+      "http_method": "PUT",
+      "path": "/1/nfe/conciliacao/cancelar/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeCancelIbsCbsEvent",
+      "client": "Nfe",
+      "method": "cancel_ibs_cbs_event",
+      "http_method": "PUT",
+      "path": "/1/nfe/evento-ibs-cbs/cancelar/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeListTaxClasses",
+      "client": "Nfe",
+      "method": "list_tax_classes",
+      "http_method": "GET",
+      "path": "/1/nfe/classe-imposto/",
+      "path_params": {},
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": [],
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDeleteTaxClasses",
+      "client": "Nfe",
+      "method": "delete_tax_classes",
+      "http_method": "DELETE",
+      "path": "/1/nfe/classe-imposto/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "referencia": "synthetic"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": [],
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeSaveTaxClasses",
+      "client": "Nfe",
+      "method": "save_tax_classes",
+      "http_method": "POST",
+      "path": "/1/nfe/classe-imposto/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "tipo": "nfcom",
+        "descricao": "Controlled communication class",
+        "codigo_classificacao": "100101",
+        "icms": {
+          "situacao_tributaria": "40"
+        },
+        "pis": {
+          "situacao_tributaria": "06"
+        },
+        "cofins": {
+          "situacao_tributaria": "06"
+        }
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "referencia": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeIssueDocument",
+      "client": "Nfe",
+      "method": "issue_document",
+      "http_method": "POST",
+      "path": "/1/nfe/emissao/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "ID": "controlled-001",
+        "modelo": "1",
+        "operacao": 1,
+        "natureza_operacao": "Synthetic sale",
+        "finalidade": 1,
+        "ambiente": 2,
+        "cliente": {
+          "cpf": "000.000.000-00",
+          "nome_completo": "Synthetic person",
+          "endereco": "Synthetic street",
+          "numero": "1",
+          "bairro": "Synthetic district",
+          "cidade": "Synthetic city",
+          "uf": "SP",
+          "cep": "01001-000"
+        },
+        "produtos": [
+          {
+            "nome": "Synthetic item",
+            "codigo": "0001",
+            "ncm": "0000.00.00",
+            "quantidade": "1.0000",
+            "unidade": "UN",
+            "subtotal": "0.10",
+            "total": "0.10",
+            "origem": 0,
+            "impostos": {
+              "icms": {
+                "codigo_cfop": "5102",
+                "situacao_tributaria": "102"
+              }
+            }
+          }
+        ],
+        "pedido": {
+          "presenca": 1,
+          "modalidade_frete": 9,
+          "pagamento": 0,
+          "forma_pagamento": "01",
+          "valor_pagamento": "0.10"
+        }
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "danfe": "https://nfe.webmania.com.br/danfe/00000000-0000-4000-8000-000000000000/"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeIssueReturn",
+      "client": "Nfe",
+      "method": "issue_return",
+      "http_method": "POST",
+      "path": "/1/nfe/devolucao/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "classe_imposto": "synthetic",
+        "chave": "00000000000000000000000000000000000000000000",
+        "ambiente": 1,
+        "natureza_operacao": "synthetic"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "status": "new_provider_state",
+        "future": false
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeIssueAdjustment",
+      "client": "Nfe",
+      "method": "issue_adjustment",
+      "http_method": "POST",
+      "path": "/1/nfe/ajuste/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "operacao": 0,
+        "natureza_operacao": "synthetic",
+        "codigo_cfop": "5102",
+        "ambiente": 1,
+        "cliente": {}
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "status": "new_provider_state",
+        "future": false
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeIssueComplement",
+      "client": "Nfe",
+      "method": "issue_complement",
+      "http_method": "POST",
+      "path": "/1/nfe/complementar/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "operacao": 1,
+        "natureza_operacao": "Synthetic complement",
+        "ambiente": 2,
+        "cliente": {
+          "cpf": "000.000.000-00",
+          "nome_completo": "Synthetic person",
+          "endereco": "Synthetic street",
+          "numero": "1",
+          "bairro": "Synthetic district",
+          "cidade": "Synthetic city",
+          "uf": "SP",
+          "cep": "01001-000"
+        },
+        "impostos": {
+          "ibs_cbs": {
+            "situacao_tributaria": "000",
+            "classificacao_tributaria": "000001",
+            "base_calculo": 0
+          }
+        }
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "status": "new_provider_state",
+        "future": false
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "fiscalUpdateCompany",
+      "client": "Nfe",
+      "method": "update_company",
+      "http_method": "POST",
+      "path": "/1/nfe/empresa/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "cnae": null
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "success": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "fiscalCreateOrPollReport",
+      "client": "Nfe",
+      "method": "create_or_poll_report",
+      "http_method": "POST",
+      "path": "/1/nfe/relatorios/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "modelo": "nfe",
+        "relatorio": "danfe",
+        "numero_inicio": "1",
+        "numero_final": "5"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeCreateIbsCbsEvent",
+      "client": "Nfe",
+      "method": "create_ibs_cbs_event",
+      "http_method": "POST",
+      "path": "/1/nfe/evento-ibs-cbs/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "chave": "00000000000000000000000000000000000000000000",
+        "ambiente": 2,
+        "cod_evento": "112110"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDownloadDanfe",
+      "client": "NfeFiles",
+      "method": "download_danfe",
+      "http_method": "GET",
+      "path": "/danfe/{identifier}/",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/pdf",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDownloadSimpleDanfe",
+      "client": "NfeFiles",
+      "method": "download_simple_danfe",
+      "http_method": "GET",
+      "path": "/danfe/simples/{identifier}/",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/pdf",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDownloadLabelDanfe",
+      "client": "NfeFiles",
+      "method": "download_label_danfe",
+      "http_method": "GET",
+      "path": "/danfe/etiqueta/{identifier}/",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/pdf",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDownloadCorrectionPdf",
+      "client": "NfeFiles",
+      "method": "download_correction_pdf",
+      "http_method": "GET",
+      "path": "/dacce/{identifier}/",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/pdf",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDownloadCorrectionPdfSequence",
+      "client": "NfeFiles",
+      "method": "download_correction_pdf_sequence",
+      "http_method": "GET",
+      "path": "/dacce/{identifier}/{event}/",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001",
+        "event": 1
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/pdf",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDownloadXml",
+      "client": "NfeFiles",
+      "method": "download_xml",
+      "http_method": "GET",
+      "path": "/xmlnfe/{identifier}/",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDownloadCancellationXml",
+      "client": "NfeFiles",
+      "method": "download_cancellation_xml",
+      "http_method": "GET",
+      "path": "/xmlnfe/{identifier}/cancelamento",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDownloadCorrectionXml",
+      "client": "NfeFiles",
+      "method": "download_correction_xml",
+      "http_method": "GET",
+      "path": "/xmlcce/{identifier}/",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDownloadCorrectionXmlSequence",
+      "client": "NfeFiles",
+      "method": "download_correction_xml_sequence",
+      "http_method": "GET",
+      "path": "/xmlcce/{identifier}/{event}/",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001",
+        "event": 1
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDownloadManifestationXml",
+      "client": "NfeFiles",
+      "method": "download_manifestation_xml",
+      "http_method": "GET",
+      "path": "/xmlmde/{uuid}/",
+      "path_params": {
+        "uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDownloadPaymentEventXml",
+      "client": "NfeFiles",
+      "method": "download_payment_event_xml",
+      "http_method": "GET",
+      "path": "/xmleconf/{identifier}/",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDownloadPaymentEventXmlSequence",
+      "client": "NfeFiles",
+      "method": "download_payment_event_xml_sequence",
+      "http_method": "GET",
+      "path": "/xmleconf/{identifier}/{event}/",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001",
+        "event": 1
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "nfeDownloadIbsCbsEventXml",
+      "client": "NfeFiles",
+      "method": "download_ibs_cbs_event_xml",
+      "http_method": "GET",
+      "path": "/xmlevento/{uuid}/",
+      "path_params": {
+        "uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/xml",
+      "response": null,
+      "binary": true,
+      "enabled": false
+    },
+    {
+      "operation": "fiscalDownloadReport",
+      "client": "NfeFiles",
+      "method": "download_report",
+      "http_method": "GET",
+      "path": "/relatorio/{uuid}/",
+      "path_params": {
+        "uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/zip",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "b2bV1CreateCompanies",
+      "client": "Reseller",
+      "method": "create_companies",
+      "http_method": "POST",
+      "path": "/api/1/b2b/empresas/",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "quantidade": 1
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": [
+        {
+          "id": 1,
+          "consumer_key": "INERT_TEST_PLACEHOLDER",
+          "consumer_secret": "INERT_TEST_PLACEHOLDER",
+          "access_token": "INERT_TEST_PLACEHOLDER",
+          "access_token_secret": "INERT_TEST_PLACEHOLDER",
+          "bearer_access_token": "",
+          "bearer_access_token_status": "pending",
+          "bearer_access_token_pending": true,
+          "future_field": {
+            "preserved": true
+          }
+        }
+      ],
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "b2bV1ListCompanies",
+      "client": "Reseller",
+      "method": "list_companies",
+      "http_method": "GET",
+      "path": "/api/1/b2b/empresas/",
+      "path_params": {},
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": [
+        {
+          "id": 1,
+          "cnpj": "",
+          "razao_social": null,
+          "credenciais": {
+            "consumer_key": "INERT_TEST_PLACEHOLDER",
+            "consumer_secret": "INERT_TEST_PLACEHOLDER",
+            "access_token": "INERT_TEST_PLACEHOLDER",
+            "access_token_secret": "INERT_TEST_PLACEHOLDER",
+            "bearer_access_token": "",
+            "bearer_access_token_status": "pending",
+            "bearer_access_token_pending": true
+          }
+        }
+      ],
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "b2bV1GetProcessedRequests",
+      "client": "Reseller",
+      "method": "get_processed_requests",
+      "http_method": "GET",
+      "path": "/api/1/b2b/requests/",
+      "path_params": {},
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "total_notas_processadas": 0,
+        "empresas": []
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterIssueCte",
+      "client": "Emitter",
+      "method": "issue_cte",
+      "http_method": "POST",
+      "path": "/2/cte/emissao",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "ambiente": 2,
+        "modelo": "cte_os",
+        "natureza_operacao": "Synthetic passenger transport",
+        "modalidade": 1,
+        "finalidade": "0",
+        "contribuicao_tomador": 9,
+        "indicador_tomador": 4,
+        "local_inicio_prestacao": {
+          "cidade": "Synthetic origin",
+          "uf": "SP"
+        },
+        "local_termino_prestacao": {
+          "cidade": "Synthetic destination",
+          "uf": "RJ"
+        },
+        "tomador": {
+          "cnpj": "00000000000000",
+          "nome_razao": "Synthetic company",
+          "endereco": "Synthetic street",
+          "numero": "001",
+          "bairro": "Synthetic",
+          "cidade": "Synthetic city",
+          "uf": "SP"
+        },
+        "servico": {
+          "tipo": 6,
+          "descricao": "Synthetic passenger transport",
+          "valor_total": "100.00",
+          "valor_recebido": "100.00"
+        },
+        "carga": {
+          "produto_predominante": "Synthetic service",
+          "valor_total": "100.00",
+          "quantidades": [
+            {
+              "quantidade": "1.0000"
+            }
+          ]
+        },
+        "impostos": {
+          "cfop": "6353",
+          "classificacao_tributaria": "SN"
+        },
+        "documentos_fiscais": [
+          {
+            "numero": "001",
+            "data_emissao": "2026-01-01",
+            "valor_documento": "100.00"
+          }
+        ],
+        "rodoviario": {
+          "taf_cte_os": "000000000000",
+          "tipo_fretamento": "2"
+        }
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterIssueSimplifiedCte",
+      "client": "Emitter",
+      "method": "issue_simplified_cte",
+      "http_method": "POST",
+      "path": "/2/cte/emissao/simplificada",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "ambiente": "1",
+        "modelo": "cte",
+        "nfe_xml": "synthetic"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterCancelCte",
+      "client": "Emitter",
+      "method": "cancel_cte",
+      "http_method": "PUT",
+      "path": "/2/cte/cancelar",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "justificativa": "Synthetic cancellation justification"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterCorrectCte",
+      "client": "Emitter",
+      "method": "correct_cte",
+      "http_method": "POST",
+      "path": "/2/cte/correcao",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "alteracoes": [
+          {
+            "campo": "synthetic",
+            "grupo": "synthetic",
+            "valor": "synthetic"
+          }
+        ],
+        "uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterConfirmCteDelivery",
+      "client": "Emitter",
+      "method": "confirm_cte_delivery",
+      "http_method": "POST",
+      "path": "/2/cte/entrega",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "notas_fiscais": [
+          "123456ab12cd34ef5600000000000000000000000000"
+        ],
+        "comprovante": "SYNTHETIC_IMAGE_PLACEHOLDER"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterCancelCteDelivery",
+      "client": "Emitter",
+      "method": "cancel_cte_delivery",
+      "http_method": "PUT",
+      "path": "/2/cte/entrega/cancelar",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "protocolo": "synthetic",
+        "sequencia": "synthetic"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterLinkCtePayment",
+      "client": "Emitter",
+      "method": "link_cte_payment",
+      "http_method": "POST",
+      "path": "/2/cte/evento",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "pagamento": {
+          "cnpj_base_psp": "00000000",
+          "cnpj_recebedor": "00000000000000",
+          "id_transacao": "synthetic",
+          "n_pag": 1,
+          "tp_meio_pagamento": "synthetic"
+        },
+        "uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterCancelCtePaymentLink",
+      "client": "Emitter",
+      "method": "cancel_cte_payment_link",
+      "http_method": "PUT",
+      "path": "/2/cte/evento/cancelar",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "protocolo_vinculacao": "000000000000000",
+        "sequencia_vinculacao": 1
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterGetCte",
+      "client": "Emitter",
+      "method": "get_cte",
+      "http_method": "GET",
+      "path": "/2/cte/consulta/{identifier}",
+      "path_params": {
+        "identifier": "synthetic"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterGetCtePaymentEvents",
+      "client": "Emitter",
+      "method": "get_cte_payment_events",
+      "http_method": "GET",
+      "path": "/2/cte/consulta/evento/{identifier}",
+      "path_params": {
+        "identifier": "synthetic"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "status": "synthetic",
+        "eventos_pagamento": [],
+        "total_eventos": 0
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterIssueDce",
+      "client": "Emitter",
+      "method": "issue_dce",
+      "http_method": "POST",
+      "path": "/2/dce/emissao",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "ambiente": "1",
+        "itens": [
+          {
+            "descricao": "synthetic",
+            "ncm": "00000000",
+            "quantidade": 0.0,
+            "valor_unitario": 0.0
+          }
+        ],
+        "cliente": {
+          "cnpj": "00000000000000",
+          "cpf": "00000000000",
+          "identificacao_alternativa": "synthetic",
+          "nome_completo": "synthetic",
+          "razao_social": "synthetic"
+        },
+        "emitente": {
+          "cnpj": "00000000000000",
+          "cpf": "00000000000",
+          "identificacao_alternativa": "synthetic",
+          "nome_completo": "synthetic",
+          "razao_social": "synthetic"
+        }
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterCancelDce",
+      "client": "Emitter",
+      "method": "cancel_dce",
+      "http_method": "PUT",
+      "path": "/2/dce/cancelar",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "chave": "123456ab12cd34ef5600000000000000000000000000",
+        "justificativa": "Synthetic schema example only"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterGetDce",
+      "client": "Emitter",
+      "method": "get_dce",
+      "http_method": "GET",
+      "path": "/2/dce/consulta/{identifier}",
+      "path_params": {
+        "identifier": "synthetic"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetNfseXml",
+      "client": "EmitterFiles",
+      "method": "get_nfse_xml",
+      "http_method": "GET",
+      "path": "/xmlnfse/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "text/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetNfsePdf",
+      "client": "EmitterFiles",
+      "method": "get_nfse_pdf",
+      "http_method": "GET",
+      "path": "/nfse/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/pdf",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetNfseRpsPdf",
+      "client": "EmitterFiles",
+      "method": "get_nfse_rps_pdf",
+      "http_method": "GET",
+      "path": "/darps/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/pdf",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetCteXml",
+      "client": "EmitterFiles",
+      "method": "get_cte_xml",
+      "http_method": "GET",
+      "path": "/xmlcte/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "text/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetCteCancelXml",
+      "client": "EmitterFiles",
+      "method": "get_cte_cancel_xml",
+      "http_method": "GET",
+      "path": "/xmlcte/{identifier}/cancelamento",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "text/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetCtePdf",
+      "client": "EmitterFiles",
+      "method": "get_cte_pdf",
+      "http_method": "GET",
+      "path": "/dacte/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/pdf",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetCteCorrectionXml",
+      "client": "EmitterFiles",
+      "method": "get_cte_correction_xml",
+      "http_method": "GET",
+      "path": "/xmlcce/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "text/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetCteCorrectionPdf",
+      "client": "EmitterFiles",
+      "method": "get_cte_correction_pdf",
+      "http_method": "GET",
+      "path": "/dacce/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/pdf",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetMdfeXml",
+      "client": "EmitterFiles",
+      "method": "get_mdfe_xml",
+      "http_method": "GET",
+      "path": "/xmlmdfe/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "text/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetMdfePdf",
+      "client": "EmitterFiles",
+      "method": "get_mdfe_pdf",
+      "http_method": "GET",
+      "path": "/damdfe/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/pdf",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetNfcomXml",
+      "client": "EmitterFiles",
+      "method": "get_nfcom_xml",
+      "http_method": "GET",
+      "path": "/xmlnfcom/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "text/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetNfcomCancelXml",
+      "client": "EmitterFiles",
+      "method": "get_nfcom_cancel_xml",
+      "http_method": "GET",
+      "path": "/xmlnfcom/{identifier}/cancelamento",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "text/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetNfcomPdf",
+      "client": "EmitterFiles",
+      "method": "get_nfcom_pdf",
+      "http_method": "GET",
+      "path": "/danfecom/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/pdf",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetDceXml",
+      "client": "EmitterFiles",
+      "method": "get_dce_xml",
+      "http_method": "GET",
+      "path": "/xmldce/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "text/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetDceCancelXml",
+      "client": "EmitterFiles",
+      "method": "get_dce_cancel_xml",
+      "http_method": "GET",
+      "path": "/xmldce/{identifier}/cancelamento",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "text/xml",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "fileGetDcePdf",
+      "client": "EmitterFiles",
+      "method": "get_dce_pdf",
+      "http_method": "GET",
+      "path": "/dace/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/pdf",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "emitterGetNfseProviderStatus",
+      "client": "Emitter",
+      "method": "get_nfse_provider_status",
+      "http_method": "GET",
+      "path": "/2/nfse/status",
+      "path_params": {},
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": true,
+        "ambientes": [
+          1,
+          2
+        ],
+        "autenticacao": [
+          "certificado_a1"
+        ],
+        "emissao": [
+          "nfse"
+        ],
+        "funcoes": [
+          "consultar"
+        ],
+        "pdf_nfse": false,
+        "pdf_sincrono": false
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterGetNfcomServiceStatus",
+      "client": "Emitter",
+      "method": "get_nfcom_service_status",
+      "http_method": "GET",
+      "path": "/2/nfcom/status",
+      "path_params": {},
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "operacional": false,
+        "mensagem": "synthetic offline"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterGetNfse",
+      "client": "Emitter",
+      "method": "get_nfse",
+      "http_method": "GET",
+      "path": "/2/nfse/consulta/{identifier}",
+      "path_params": {
+        "identifier": "synthetic"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "modelo": "lote_rps",
+        "status": "processando",
+        "info_nfse": [],
+        "future": false
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterGetNfcom",
+      "client": "Emitter",
+      "method": "get_nfcom",
+      "http_method": "GET",
+      "path": "/2/nfcom/consulta/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "modelo": "nfcom",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterGetNfcomPaymentEvents",
+      "client": "Emitter",
+      "method": "get_nfcom_payment_events",
+      "http_method": "GET",
+      "path": "/2/nfcom/consulta/evento/{identifier}",
+      "path_params": {
+        "identifier": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "status": "synthetic",
+        "eventos_pagamento": [],
+        "total_eventos": 0
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterManifestNfse",
+      "client": "Emitter",
+      "method": "manifest_nfse",
+      "http_method": "PUT",
+      "path": "/2/nfse/manifestar",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "ambiente": 2,
+        "chave": "00000000000000000000000000000000000000000000000000",
+        "manifestador": 1,
+        "evento": 1
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "modelo": "lote_rps",
+        "status": "processando",
+        "info_nfse": [],
+        "future": false
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterIssueMdfe",
+      "client": "Emitter",
+      "method": "issue_mdfe",
+      "http_method": "POST",
+      "path": "/2/mdfe/emissao",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "ambiente": "1",
+        "carregamento": [
+          {
+            "nome_municipio": "synthetic"
+          }
+        ],
+        "descarregamento": [
+          {
+            "documentos_fiscais": [
+              {
+                "chave": "00000000000000000000000000000000000000000000"
+              }
+            ],
+            "nome_municipio": "synthetic"
+          }
+        ],
+        "emitente": "1",
+        "modalidade": "1",
+        "peso_bruto": "synthetic",
+        "uf_carregamento": "synthetic",
+        "uf_descarregamento": "synthetic",
+        "unidade": "01",
+        "valor_carga": "synthetic",
+        "rodoviario": {}
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterCloseMdfe",
+      "client": "Emitter",
+      "method": "close_mdfe",
+      "http_method": "PUT",
+      "path": "/2/mdfe/encerrar",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "codigo_municipio": "0000000",
+        "municipio": "synthetic",
+        "uf": "synthetic"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterCancelMdfe",
+      "client": "Emitter",
+      "method": "cancel_mdfe",
+      "http_method": "PUT",
+      "path": "/2/mdfe/cancelar",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "chave": "123456ab12cd34ef5600000000000000000000000000",
+        "justificativa": "Synthetic schema example only"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterAddMdfeConductor",
+      "client": "Emitter",
+      "method": "add_mdfe_conductor",
+      "http_method": "PUT",
+      "path": "/2/mdfe/condutor",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "cpf": "synthetic",
+        "nome": "synthetic",
+        "uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterGetMdfe",
+      "client": "Emitter",
+      "method": "get_mdfe",
+      "http_method": "GET",
+      "path": "/2/mdfe/consulta/{key}",
+      "path_params": {
+        "key": "synthetic"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorSearchDocuments",
+      "client": "Monitor",
+      "method": "search_documents",
+      "http_method": "POST",
+      "path": "/2/monitor/documentos",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "modelo": "nfe",
+        "filtros": {
+          "empresa_uuid": [
+            "00000000-0000-0000-0000-000000000000"
+          ],
+          "categoria": [
+            "recebidas"
+          ],
+          "status": [
+            "aprovado"
+          ]
+        },
+        "filtros_modelo": {
+          "operacao": [
+            "0",
+            1
+          ]
+        },
+        "paginacao": "cursor"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "data": [],
+        "meta": {
+          "current_page": 1,
+          "last_page": 1,
+          "per_page": 1,
+          "total": 0
+        }
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorGetDocument",
+      "client": "Monitor",
+      "method": "get_document",
+      "http_method": "GET",
+      "path": "/2/monitor/documentos/{fd}",
+      "path_params": {
+        "fd": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "empresa_uuid": "00000000-0000-4000-8000-000000000000",
+        "modelo": "nfe",
+        "status": "aprovado",
+        "categoria": "recebidas",
+        "data_emissao": "2025-02-27 13:17:00",
+        "numero": 200,
+        "serie": 1,
+        "chave": "00000000000000000000000000000000000000000000",
+        "valor": 6200,
+        "operacao": 0,
+        "finalidade": 1,
+        "cfop": [
+          "2909"
+        ],
+        "natureza_operacao": "Compra para industrialização",
+        "emitente": {
+          "cnpj": "00000000000000",
+          "razao_social": "EMPRESA FORNECEDORA LTDA",
+          "ie": "000000000000",
+          "uf": "SP",
+          "endereco": "Rua das Indústrias",
+          "numero": "1500",
+          "complemento": "Galpão 2",
+          "bairro": "Distrito Industrial",
+          "cep": "12345-678",
+          "cidade": "São Paulo",
+          "telefone": "11999999999",
+          "email": "fiscal@fornecedor.com"
+        },
+        "cliente": {
+          "cnpj": "11111111000111",
+          "razao_social": "EMPRESA COMPRADORA S/A",
+          "ie": "111111111111",
+          "uf": "SP",
+          "endereco": "Av. Principal",
+          "numero": "1000",
+          "bairro": "Centro",
+          "cep": "98765-432",
+          "cidade": "São Paulo",
+          "telefone": "11888888888",
+          "email": "compras@empresa.com"
+        },
+        "pedido": {
+          "numero_pedido": "PED-2025-001234",
+          "numero_compra": "OC-2025-005678"
+        },
+        "produtos": [
+          {
+            "codigo": "MP001",
+            "descricao": "MATÉRIA PRIMA ESPECIAL TIPO A",
+            "ncm": "39269090",
+            "cfop": "2909",
+            "unidade": "KG",
+            "quantidade": 1000,
+            "valor_unitario": 6.2,
+            "valor_total": 6200,
+            "impostos": {
+              "icms": {
+                "situacao_tributaria": "00",
+                "origem": 0,
+                "base_calculo": 6200,
+                "aliquota": 18,
+                "valor": 1116
+              },
+              "ipi": {
+                "situacao_tributaria": "50",
+                "base_calculo": 6200,
+                "aliquota": 5,
+                "valor": 310
+              },
+              "pis": {
+                "situacao_tributaria": "01",
+                "base_calculo": 6200,
+                "aliquota": 1.65,
+                "valor": 102.3
+              },
+              "cofins": {
+                "situacao_tributaria": "01",
+                "base_calculo": 6200,
+                "aliquota": 7.6,
+                "valor": 471.2
+              },
+              "ibs_cbs": {
+                "situacao_tributaria": "000",
+                "classificacao_tributaria": "000001",
+                "indicador_doacao": false,
+                "bc": 6200,
+                "valor_ibs": 124.0,
+                "ibs_estadual": {
+                  "aliquota": 1.2,
+                  "valor": 74.4,
+                  "aliquota_diferimento": 0.1,
+                  "valor_diferimento": 6.2,
+                  "valor_devolvido": 3.1,
+                  "aliquota_reducao": 0.2,
+                  "aliquota_efetiva": 1.0
+                },
+                "ibs_municipal": {
+                  "aliquota": 0.8,
+                  "valor": 49.6,
+                  "aliquota_diferimento": 0.05,
+                  "valor_diferimento": 3.1,
+                  "valor_devolvido": 1.24,
+                  "aliquota_reducao": 0.1,
+                  "aliquota_efetiva": 0.7
+                },
+                "cbs": {
+                  "aliquota": 0.9,
+                  "valor": 55.8,
+                  "aliquota_diferimento": 0.03,
+                  "valor_diferimento": 1.86,
+                  "valor_devolvido": 0.62,
+                  "aliquota_reducao": 0.05,
+                  "aliquota_efetiva": 0.85
+                },
+                "situacao_tributaria_regular": "000",
+                "classificacao_tributaria_regular": "000001",
+                "tributacao_regular": {
+                  "ibs_estadual": {
+                    "aliquota_efetiva": 1.1,
+                    "valor": 68.2
+                  },
+                  "ibs_municipal": {
+                    "aliquota_efetiva": 0.75,
+                    "valor": 46.5
+                  },
+                  "cbs": {
+                    "aliquota_efetiva": 0.88,
+                    "valor": 54.56
+                  }
+                },
+                "compra_governamental": {
+                  "ibs_estadual": {
+                    "aliquota": 1.0,
+                    "valor": 62.0
+                  },
+                  "ibs_municipal": {
+                    "aliquota": 0.6,
+                    "valor": 37.2
+                  },
+                  "cbs": {
+                    "aliquota": 0.7,
+                    "valor": 43.4
+                  }
+                },
+                "tributacao_monofasica": {
+                  "quantidade_bc": 1000.0,
+                  "aliquota_ibs": 0.3,
+                  "aliquota_cbs": 0.2,
+                  "valor_ibs": 300.0,
+                  "valor_cbs": 200.0,
+                  "quantidade_bc_retencao": 200.0,
+                  "aliquota_ibs_retencao": 0.1,
+                  "aliquota_cbs_retencao": 0.05,
+                  "valor_ibs_retencao": 20.0,
+                  "valor_cbs_retencao": 10.0,
+                  "quantidade_bc_retido": 100.0,
+                  "aliquota_ibs_retido": 0.08,
+                  "aliquota_cbs_retido": 0.04,
+                  "valor_ibs_retido": 8.0,
+                  "valor_cbs_retido": 4.0,
+                  "aliquota_diferimento_ibs": 0.02,
+                  "aliquota_diferimento_cbs": 0.01,
+                  "valor_diferimento_ibs": 2.0,
+                  "valor_diferimento_cbs": 1.0,
+                  "valor_total_ibs": 330.0,
+                  "valor_total_cbs": 215.0
+                },
+                "transferencia_credito": {
+                  "valor_ibs": 6.2,
+                  "valor_cbs": 3.1
+                },
+                "ajuste_competencia": {
+                  "competencia_apuracao": "2026-01",
+                  "valor_ibs": 4.96,
+                  "valor_cbs": 2.48
+                },
+                "credito_presumido": {
+                  "classificacao": "01",
+                  "bc": 6200.0,
+                  "aliquota_ibs": 0.5,
+                  "valor_ibs": 31.0,
+                  "valor_ibs_condicionado_suspensao": 1.24,
+                  "aliquota_cbs": 0.3,
+                  "valor_cbs": 18.6,
+                  "valor_cbs_condicionado_suspensao": 0.62
+                },
+                "credito_presumido_zfm": {
+                  "competencia_apuracao": "2026-01",
+                  "classificacao": "02",
+                  "valor_ibs": 12.4
+                },
+                "estorno_credito": {
+                  "valor_ibs": 6.2,
+                  "valor_cbs": 3.1
+                }
+              }
+            }
+          }
+        ],
+        "transporte": {
+          "modalidade_frete": 1,
+          "transportadora": {
+            "cnpj": "22222222000222",
+            "razao_social": "TRANSPORTADORA RÁPIDA LTDA",
+            "ie": "222222222222",
+            "endereco": "Rod. BR-101",
+            "numero": "KM 50",
+            "cidade": "São Paulo",
+            "uf": "SP"
+          },
+          "volumes": [
+            {
+              "quantidade": 10,
+              "especie": "CAIXA",
+              "marca": "FORNECEDOR",
+              "numeracao": "1-10",
+              "peso_liquido": 1000,
+              "peso_bruto": 1050
+            }
+          ],
+          "veiculo": {
+            "placa": "ABC1234",
+            "uf": "SP"
+          }
+        },
+        "totais": {
+          "icms_bc": 6200,
+          "icms_valor": 1116,
+          "icms_valor_desonerado": 0,
+          "icms_st_bc": 0,
+          "icms_st_valor": 0,
+          "fcp_valor": 0,
+          "fcp_st_valor": 0,
+          "fcp_st_retido_valor": 0,
+          "ipi_valor": 310,
+          "ipi_devolvido_valor": 0,
+          "pis_valor": 102.3,
+          "cofins_valor": 471.2,
+          "ii_valor": 0,
+          "valor_produtos": 6200,
+          "valor_seguro": 0,
+          "valor_outras_despesas": 0,
+          "valor_desconto": 0,
+          "valor_frete": 0,
+          "valor_total_nfe": 7826
+        },
+        "totais_issqn": {
+          "valor_servicos": 0,
+          "iss_bc": 0,
+          "iss_valor": 0,
+          "pis_valor": 0,
+          "cofins_valor": 0,
+          "data_competencia": "2025-02-27",
+          "deducao": 0,
+          "outras_retencoes": 0,
+          "desconto_incondicionado": 0,
+          "desconto_condicionado": 0,
+          "iss_retido_valor": 0,
+          "regime_especial_tributacao": "1"
+        },
+        "fatura": {
+          "numero": "2025/0200",
+          "valor_original": 6200,
+          "valor_desconto": 0,
+          "valor_liquido": 6200
+        },
+        "parcelas": [
+          {
+            "numero": "001",
+            "vencimento": "2025-03-27",
+            "valor": 3100
+          },
+          {
+            "numero": "002",
+            "vencimento": "2025-04-27",
+            "valor": 3100
+          }
+        ],
+        "responsavel_tecnico": {
+          "cnpj": "33333333000333",
+          "contato": "João Silva",
+          "email": "suporte@sistema.com",
+          "telefone": "11777777777"
+        },
+        "protocolo": "135250000123456"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorListDocumentEvents",
+      "client": "Monitor",
+      "method": "list_document_events",
+      "http_method": "GET",
+      "path": "/2/monitor/documentos/{fd}/eventos",
+      "path_params": {
+        "fd": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "data": []
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorManifestDocument",
+      "client": "Monitor",
+      "method": "manifest_document",
+      "http_method": "POST",
+      "path": "/2/monitor/documentos/{fd}/eventos",
+      "path_params": {
+        "fd": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": {
+        "evento": 1,
+        "manifestacao": 3,
+        "justificativa": "Synthetic justified operation"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "documento_uuid": "00000000-0000-4000-8000-000000000000",
+        "protocolo": "0000000000000000",
+        "registrado_em": "2025-06-02 13:17:00",
+        "tipo_evento": 110110,
+        "descricao_evento": "Carta de correção",
+        "cnpj_autor": "00000000000000",
+        "cpf_autor": "00000000000",
+        "resumo": false,
+        "correcao": "XXXXXX XXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX",
+        "log": {
+          "tpEvento": "110110",
+          "xEvento": "Carta de Correcao",
+          "nProt": "0000000000000000",
+          "dhRegEvento": "2025-06-02T13:17:00-03:00",
+          "cStat": "135",
+          "xMotivo": "Evento registrado e vinculado a NF-e"
+        }
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorListReports",
+      "client": "Monitor",
+      "method": "list_reports",
+      "http_method": "GET",
+      "path": "/2/monitor/documentos/relatorios",
+      "path_params": {},
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "data": [],
+        "meta": {
+          "current_page": 1,
+          "last_page": 1,
+          "per_page": 1,
+          "total": 0
+        }
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorDownloadReport",
+      "client": "Monitor",
+      "method": "download_report",
+      "http_method": "GET",
+      "path": "/2/monitor/documentos/relatorios/{report}",
+      "path_params": {
+        "report": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/octet-stream",
+      "response": null,
+      "binary": true,
+      "enabled": true
+    },
+    {
+      "operation": "monitorImportDocument",
+      "client": "Monitor",
+      "method": "import_document",
+      "http_method": "POST",
+      "path": "/2/monitor/documentos/importacoes",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "empresa_uuid": "00000000-0000-4000-8000-000000000000",
+        "chave": "00000000000000000000000000000000000000000000"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "empresa_uuid": "00000000-0000-4000-8000-000000000000",
+        "modelo": "nfe",
+        "status": "aprovado",
+        "categoria": "recebidas",
+        "data_emissao": "2025-02-27 13:17:00",
+        "numero": 200,
+        "serie": 1,
+        "chave": "00000000000000000000000000000000000000000000",
+        "valor": 6200,
+        "operacao": 0,
+        "finalidade": 1,
+        "cfop": [
+          "2909"
+        ],
+        "natureza_operacao": "Compra para industrialização",
+        "emitente": {
+          "cnpj": "00000000000000",
+          "razao_social": "EMPRESA FORNECEDORA LTDA",
+          "ie": "000000000000",
+          "uf": "SP",
+          "endereco": "Rua das Indústrias",
+          "numero": "1500",
+          "complemento": "Galpão 2",
+          "bairro": "Distrito Industrial",
+          "cep": "12345-678",
+          "cidade": "São Paulo",
+          "telefone": "11999999999",
+          "email": "fiscal@fornecedor.com"
+        },
+        "cliente": {
+          "cnpj": "11111111000111",
+          "razao_social": "EMPRESA COMPRADORA S/A",
+          "ie": "111111111111",
+          "uf": "SP",
+          "endereco": "Av. Principal",
+          "numero": "1000",
+          "bairro": "Centro",
+          "cep": "98765-432",
+          "cidade": "São Paulo",
+          "telefone": "11888888888",
+          "email": "compras@empresa.com"
+        },
+        "pedido": {
+          "numero_pedido": "PED-2025-001234",
+          "numero_compra": "OC-2025-005678"
+        },
+        "produtos": [
+          {
+            "codigo": "MP001",
+            "descricao": "MATÉRIA PRIMA ESPECIAL TIPO A",
+            "ncm": "39269090",
+            "cfop": "2909",
+            "unidade": "KG",
+            "quantidade": 1000,
+            "valor_unitario": 6.2,
+            "valor_total": 6200,
+            "impostos": {
+              "icms": {
+                "situacao_tributaria": "00",
+                "origem": 0,
+                "base_calculo": 6200,
+                "aliquota": 18,
+                "valor": 1116
+              },
+              "ipi": {
+                "situacao_tributaria": "50",
+                "base_calculo": 6200,
+                "aliquota": 5,
+                "valor": 310
+              },
+              "pis": {
+                "situacao_tributaria": "01",
+                "base_calculo": 6200,
+                "aliquota": 1.65,
+                "valor": 102.3
+              },
+              "cofins": {
+                "situacao_tributaria": "01",
+                "base_calculo": 6200,
+                "aliquota": 7.6,
+                "valor": 471.2
+              },
+              "ibs_cbs": {
+                "situacao_tributaria": "000",
+                "classificacao_tributaria": "000001",
+                "indicador_doacao": false,
+                "bc": 6200,
+                "valor_ibs": 124.0,
+                "ibs_estadual": {
+                  "aliquota": 1.2,
+                  "valor": 74.4,
+                  "aliquota_diferimento": 0.1,
+                  "valor_diferimento": 6.2,
+                  "valor_devolvido": 3.1,
+                  "aliquota_reducao": 0.2,
+                  "aliquota_efetiva": 1.0
+                },
+                "ibs_municipal": {
+                  "aliquota": 0.8,
+                  "valor": 49.6,
+                  "aliquota_diferimento": 0.05,
+                  "valor_diferimento": 3.1,
+                  "valor_devolvido": 1.24,
+                  "aliquota_reducao": 0.1,
+                  "aliquota_efetiva": 0.7
+                },
+                "cbs": {
+                  "aliquota": 0.9,
+                  "valor": 55.8,
+                  "aliquota_diferimento": 0.03,
+                  "valor_diferimento": 1.86,
+                  "valor_devolvido": 0.62,
+                  "aliquota_reducao": 0.05,
+                  "aliquota_efetiva": 0.85
+                },
+                "situacao_tributaria_regular": "000",
+                "classificacao_tributaria_regular": "000001",
+                "tributacao_regular": {
+                  "ibs_estadual": {
+                    "aliquota_efetiva": 1.1,
+                    "valor": 68.2
+                  },
+                  "ibs_municipal": {
+                    "aliquota_efetiva": 0.75,
+                    "valor": 46.5
+                  },
+                  "cbs": {
+                    "aliquota_efetiva": 0.88,
+                    "valor": 54.56
+                  }
+                },
+                "compra_governamental": {
+                  "ibs_estadual": {
+                    "aliquota": 1.0,
+                    "valor": 62.0
+                  },
+                  "ibs_municipal": {
+                    "aliquota": 0.6,
+                    "valor": 37.2
+                  },
+                  "cbs": {
+                    "aliquota": 0.7,
+                    "valor": 43.4
+                  }
+                },
+                "tributacao_monofasica": {
+                  "quantidade_bc": 1000.0,
+                  "aliquota_ibs": 0.3,
+                  "aliquota_cbs": 0.2,
+                  "valor_ibs": 300.0,
+                  "valor_cbs": 200.0,
+                  "quantidade_bc_retencao": 200.0,
+                  "aliquota_ibs_retencao": 0.1,
+                  "aliquota_cbs_retencao": 0.05,
+                  "valor_ibs_retencao": 20.0,
+                  "valor_cbs_retencao": 10.0,
+                  "quantidade_bc_retido": 100.0,
+                  "aliquota_ibs_retido": 0.08,
+                  "aliquota_cbs_retido": 0.04,
+                  "valor_ibs_retido": 8.0,
+                  "valor_cbs_retido": 4.0,
+                  "aliquota_diferimento_ibs": 0.02,
+                  "aliquota_diferimento_cbs": 0.01,
+                  "valor_diferimento_ibs": 2.0,
+                  "valor_diferimento_cbs": 1.0,
+                  "valor_total_ibs": 330.0,
+                  "valor_total_cbs": 215.0
+                },
+                "transferencia_credito": {
+                  "valor_ibs": 6.2,
+                  "valor_cbs": 3.1
+                },
+                "ajuste_competencia": {
+                  "competencia_apuracao": "2026-01",
+                  "valor_ibs": 4.96,
+                  "valor_cbs": 2.48
+                },
+                "credito_presumido": {
+                  "classificacao": "01",
+                  "bc": 6200.0,
+                  "aliquota_ibs": 0.5,
+                  "valor_ibs": 31.0,
+                  "valor_ibs_condicionado_suspensao": 1.24,
+                  "aliquota_cbs": 0.3,
+                  "valor_cbs": 18.6,
+                  "valor_cbs_condicionado_suspensao": 0.62
+                },
+                "credito_presumido_zfm": {
+                  "competencia_apuracao": "2026-01",
+                  "classificacao": "02",
+                  "valor_ibs": 12.4
+                },
+                "estorno_credito": {
+                  "valor_ibs": 6.2,
+                  "valor_cbs": 3.1
+                }
+              }
+            }
+          }
+        ],
+        "transporte": {
+          "modalidade_frete": 1,
+          "transportadora": {
+            "cnpj": "22222222000222",
+            "razao_social": "TRANSPORTADORA RÁPIDA LTDA",
+            "ie": "222222222222",
+            "endereco": "Rod. BR-101",
+            "numero": "KM 50",
+            "cidade": "São Paulo",
+            "uf": "SP"
+          },
+          "volumes": [
+            {
+              "quantidade": 10,
+              "especie": "CAIXA",
+              "marca": "FORNECEDOR",
+              "numeracao": "1-10",
+              "peso_liquido": 1000,
+              "peso_bruto": 1050
+            }
+          ],
+          "veiculo": {
+            "placa": "ABC1234",
+            "uf": "SP"
+          }
+        },
+        "totais": {
+          "icms_bc": 6200,
+          "icms_valor": 1116,
+          "icms_valor_desonerado": 0,
+          "icms_st_bc": 0,
+          "icms_st_valor": 0,
+          "fcp_valor": 0,
+          "fcp_st_valor": 0,
+          "fcp_st_retido_valor": 0,
+          "ipi_valor": 310,
+          "ipi_devolvido_valor": 0,
+          "pis_valor": 102.3,
+          "cofins_valor": 471.2,
+          "ii_valor": 0,
+          "valor_produtos": 6200,
+          "valor_seguro": 0,
+          "valor_outras_despesas": 0,
+          "valor_desconto": 0,
+          "valor_frete": 0,
+          "valor_total_nfe": 7826
+        },
+        "totais_issqn": {
+          "valor_servicos": 0,
+          "iss_bc": 0,
+          "iss_valor": 0,
+          "pis_valor": 0,
+          "cofins_valor": 0,
+          "data_competencia": "2025-02-27",
+          "deducao": 0,
+          "outras_retencoes": 0,
+          "desconto_incondicionado": 0,
+          "desconto_condicionado": 0,
+          "iss_retido_valor": 0,
+          "regime_especial_tributacao": "1"
+        },
+        "fatura": {
+          "numero": "2025/0200",
+          "valor_original": 6200,
+          "valor_desconto": 0,
+          "valor_liquido": 6200
+        },
+        "parcelas": [
+          {
+            "numero": "001",
+            "vencimento": "2025-03-27",
+            "valor": 3100
+          },
+          {
+            "numero": "002",
+            "vencimento": "2025-04-27",
+            "valor": 3100
+          }
+        ],
+        "responsavel_tecnico": {
+          "cnpj": "33333333000333",
+          "contato": "João Silva",
+          "email": "suporte@sistema.com",
+          "telefone": "11777777777"
+        },
+        "protocolo": "135250000123456"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorGetImportStatus",
+      "client": "Monitor",
+      "method": "get_import_status",
+      "http_method": "GET",
+      "path": "/2/monitor/documentos/importacoes/{uuid}",
+      "path_params": {
+        "uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "status": "processando",
+        "processado": 0,
+        "importados": [],
+        "descartados": []
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorCreateCompany",
+      "client": "Monitor",
+      "method": "create_company",
+      "http_method": "POST",
+      "path": "/2/monitor/empresas",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "cnpj": "00000000000000",
+        "razao_social": "Synthetic company",
+        "cep": "01001000",
+        "certificado_base64": "PHRlc3QvPg==",
+        "certificado_senha": "synthetic-placeholder"
+      },
+      "has_request": true,
+      "status": 201,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorUpdateCompany",
+      "client": "Monitor",
+      "method": "update_company",
+      "http_method": "PUT",
+      "path": "/2/monitor/empresas/{company}",
+      "path_params": {
+        "company": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": {
+        "modelos_download": []
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorCreateCompanyMunicipality",
+      "client": "Monitor",
+      "method": "create_company_municipality",
+      "http_method": "POST",
+      "path": "/2/monitor/empresas/{company}/municipios-nfse",
+      "path_params": {
+        "company": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": {
+        "codigo_ibge": "3550308"
+      },
+      "has_request": true,
+      "status": 201,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "tipo_download": 1,
+        "municipio": "synthetic",
+        "uf": "synthetic",
+        "codigo_ibge": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorUpdateCompanyMunicipality",
+      "client": "Monitor",
+      "method": "update_company_municipality",
+      "http_method": "PUT",
+      "path": "/2/monitor/empresas/{company}/municipios-nfse/{download}",
+      "path_params": {
+        "company": "00000000-0000-4000-8000-000000000001",
+        "download": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": {},
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "tipo_download": 1,
+        "municipio": "synthetic",
+        "uf": "synthetic",
+        "codigo_ibge": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorDeleteCompanyMunicipality",
+      "client": "Monitor",
+      "method": "delete_company_municipality",
+      "http_method": "DELETE",
+      "path": "/2/monitor/empresas/{company}/municipios-nfse/{download}",
+      "path_params": {
+        "company": "00000000-0000-4000-8000-000000000001",
+        "download": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "msg": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorListCompanies",
+      "client": "Monitor",
+      "method": "list_companies",
+      "http_method": "GET",
+      "path": "/2/monitor/empresas",
+      "path_params": {},
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "data": [],
+        "meta": {
+          "current_page": 1,
+          "last_page": 1,
+          "per_page": 50,
+          "total": 0
+        }
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorGetCompany",
+      "client": "Monitor",
+      "method": "get_company",
+      "http_method": "GET",
+      "path": "/2/monitor/empresas/{company}",
+      "path_params": {
+        "company": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000000",
+        "modelos_download": [
+          "nfse"
+        ],
+        "future": false
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorListCompanyMunicipalities",
+      "client": "Monitor",
+      "method": "list_company_municipalities",
+      "http_method": "GET",
+      "path": "/2/monitor/empresas/{company}/municipios-nfse",
+      "path_params": {
+        "company": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "data": [],
+        "meta": {
+          "current_page": 1,
+          "last_page": 1,
+          "per_page": 1,
+          "total": 0
+        }
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorGetCompanyMunicipality",
+      "client": "Monitor",
+      "method": "get_company_municipality",
+      "http_method": "GET",
+      "path": "/2/monitor/empresas/{company}/municipios-nfse/{download}",
+      "path_params": {
+        "company": "00000000-0000-4000-8000-000000000001",
+        "download": "00000000-0000-4000-8000-000000000001"
+      },
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "00000000-0000-4000-8000-000000000001",
+        "tipo_download": 1,
+        "municipio": "synthetic",
+        "uf": "synthetic",
+        "codigo_ibge": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorListAvailableMunicipalities",
+      "client": "Monitor",
+      "method": "list_available_municipalities",
+      "http_method": "GET",
+      "path": "/2/monitor/municipios-nfse",
+      "path_params": {},
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "data": []
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "monitorGetDownloadStatistics",
+      "client": "Monitor",
+      "method": "get_download_statistics",
+      "http_method": "GET",
+      "path": "/2/monitor/estatisticas/downloads",
+      "path_params": {},
+      "query": {},
+      "request": null,
+      "has_request": false,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "total_downloads": 0,
+        "empresas": []
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterIssueNfcom",
+      "client": "Emitter",
+      "method": "issue_nfcom",
+      "http_method": "POST",
+      "path": "/2/nfcom/emissao",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "ambiente": 2,
+        "natureza_operacao": "Synthetic communication",
+        "tipo_operacao": 1,
+        "finalidade": 1,
+        "tipo_faturamento": 0,
+        "cliente": {
+          "cnpj": "00000000000000",
+          "razao_social": "Synthetic company",
+          "indicador_ie": 9,
+          "endereco": {
+            "logradouro": "Synthetic street",
+            "numero": "001",
+            "bairro": "Synthetic",
+            "codigo_municipio": "3550308",
+            "municipio": "Synthetic municipality",
+            "uf": "SP",
+            "cep": "00000000"
+          }
+        },
+        "assinante": {
+          "codigo": "SYNTHETIC",
+          "tipo": 1,
+          "tipo_servico": 4,
+          "contrato": {
+            "numero": "SYNTHETIC",
+            "data_inicio": "2026-01-01",
+            "data_fim": "2026-12-31"
+          }
+        },
+        "itens": [
+          {
+            "descricao": "Synthetic communication service",
+            "unidade": "MES",
+            "quantidade": "1.0000",
+            "valor_unitario": "99.90",
+            "valor_total": "99.90",
+            "indicador_total": 1,
+            "classe_imposto": "REF123456"
+          }
+        ]
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "modelo": "nfcom",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterCancelNfcom",
+      "client": "Emitter",
+      "method": "cancel_nfcom",
+      "http_method": "PUT",
+      "path": "/2/nfcom/cancelar",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "chave": "123456ab12cd34ef5600000000000000000000000000",
+        "justificativa": "Synthetic schema example only"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterIssueNfse",
+      "client": "Emitter",
+      "method": "issue_nfse",
+      "http_method": "POST",
+      "path": "/2/nfse/emissao",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "ambiente": 2,
+        "rps": [
+          {
+            "servico": {
+              "discriminacao": "Synthetic service",
+              "valor_servicos": "100.00",
+              "iss_retido": 2
+            }
+          }
+        ]
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "modelo": "synthetic",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterCancelNfse",
+      "client": "Emitter",
+      "method": "cancel_nfse",
+      "http_method": "PUT",
+      "path": "/2/nfse/cancelar",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "uuid": "00000000-0000-4000-8000-000000000001"
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "modelo": "synthetic",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    },
+    {
+      "operation": "emitterReplaceNfse",
+      "client": "Emitter",
+      "method": "replace_nfse",
+      "http_method": "POST",
+      "path": "/2/nfse/substituir",
+      "path_params": {},
+      "query": {},
+      "request": {
+        "ambiente": 2,
+        "motivo": 1,
+        "chave": "00000000000000000000000000000000000000000000000000",
+        "rps": [
+          {
+            "servico": {
+              "classe_imposto": "SYNTHETIC",
+              "discriminacao": "Synthetic service",
+              "valor_servicos": "1.00"
+            }
+          }
+        ]
+      },
+      "has_request": true,
+      "status": 200,
+      "media_type": "application/json",
+      "response": {
+        "uuid": "synthetic",
+        "modelo": "synthetic",
+        "status": "synthetic"
+      },
+      "binary": false,
+      "enabled": true
+    }
+  ]
+}

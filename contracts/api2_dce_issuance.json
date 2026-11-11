@@ -1,0 +1,3274 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Webmania Emissor Fiscal API2 — dce known field groups draft",
+    "version": "0.2.0-draft.20261025",
+    "description": "Concrete typed request/response groups for dce. Conditional, provider and runtime catalogs are not exhaustively modeled; no full-product or fiscal approval claim."
+  },
+  "servers": [
+    {
+      "url": "https://api.webmania.com.br"
+    }
+  ],
+  "paths": {
+    "/2/dce/emissao": {
+      "post": {
+        "operationId": "emitterIssueDce",
+        "summary": "emitterIssueDce",
+        "tags": [
+          "Emissor Fiscal API2",
+          "dce"
+        ],
+        "security": [
+          {
+            "IssuerBearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Business response. HTTP200 is not proof of fiscal approval; inspect status and a possible error field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DceFiscalResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authentication, subscription, fiscal validation or provider error. Do not retry uncertain fiscal operations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmitterError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-dce/#emitir-dce",
+        "x-operation-effects": {
+          "business_mutation": true,
+          "automatic_retries": 0
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmitterIssueDcePayload"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2/dce/cancelar": {
+      "put": {
+        "operationId": "emitterCancelDce",
+        "summary": "emitterCancelDce",
+        "tags": [
+          "Emissor Fiscal API2",
+          "dce"
+        ],
+        "security": [
+          {
+            "IssuerBearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Business response. HTTP200 is not proof of fiscal approval; inspect status and a possible error field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiscalEventResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authentication, subscription, fiscal validation or provider error. Do not retry uncertain fiscal operations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmitterError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-dce/#cancelar-dce",
+        "x-operation-effects": {
+          "business_mutation": true,
+          "automatic_retries": 0
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmitterCancelDcePayload"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/2/dce/consulta/{identifier}": {
+      "get": {
+        "operationId": "emitterGetDce",
+        "summary": "emitterGetDce",
+        "tags": [
+          "Emissor Fiscal API2",
+          "dce"
+        ],
+        "security": [
+          {
+            "IssuerBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Existing company-owned fiscal UUID or access key as documented; preserve as a string."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Business response. HTTP200 is not proof of fiscal approval; inspect status and a possible error field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DceFiscalResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Authentication, subscription, fiscal validation or provider error. Do not retry uncertain fiscal operations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmitterError"
+                }
+              }
+            }
+          }
+        },
+        "x-public-documentation": "https://webmania.com.br/docs/rest-api-dce/#consultar-dce",
+        "x-operation-effects": {
+          "business_mutation": false,
+          "automatic_retries": 0,
+          "notes": "Consultations may refresh provider state. Use stable existing documents and review the operation branch before treating a consultation as read-only."
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "IssuerBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Existing company API2 Bearer token with issue capability and the required product subscription. Separate from Monitor fdmanagement tokens, API1 four headers and X-Token; never fall back."
+      }
+    },
+    "schemas": {
+      "EmitterError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "boolean"
+          },
+          "configured": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true,
+        "description": "The API can return a functional error in HTTP 200. A present error property is always failure. Redact all service credentials and preserve HTTP status."
+      },
+      "NfseServiceCode": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "descricao": {
+            "type": "string"
+          },
+          "id_cnae": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "codigo_tributacao": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "aliquota_sugerida": {
+            "type": "object",
+            "properties": {
+              "iss": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "codigo",
+          "descricao"
+        ]
+      },
+      "NfseParameterRequirements": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        },
+        "description": "Map from dotted public field paths to requirement labels, including obrigatorio,obrigatorio_pf,obrigatorio_pj,opcional. Additional future labels/fields are preserved; not all providers return this map."
+      },
+      "NfseProviderStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": true
+          },
+          "modelo": {
+            "type": "string"
+          },
+          "versao": {
+            "type": "string"
+          },
+          "ambientes": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "enum": [
+                1,
+                2
+              ]
+            }
+          },
+          "autenticacao": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "emissao": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "funcoes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pdf_nfse": {
+            "type": "boolean"
+          },
+          "pdf_sincrono": {
+            "type": "boolean"
+          },
+          "codigo_servico": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NfseServiceCode"
+            }
+          },
+          "parametros_disponiveis": {
+            "$ref": "#/components/schemas/NfseParameterRequirements"
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "status",
+          "ambientes",
+          "autenticacao",
+          "emissao",
+          "funcoes",
+          "pdf_nfse",
+          "pdf_sincrono"
+        ],
+        "description": "Company/provider capabilities. Successful status=true does not authorize issuing without checking the returned environment/authentication/model/function support. Error status=false responses are functional errors, not a successful capability lookup."
+      },
+      "NfcomServiceStatus": {
+        "type": "object",
+        "properties": {
+          "operacional": {
+            "type": "boolean"
+          },
+          "mensagem": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "operacional",
+          "mensagem"
+        ],
+        "description": "The current service always probes the production SEFAZ environment. Operational=true returns HTTP 200; operational=false returns HTTP 503, preserving the body as failure context. A configured A1 certificate and eligible NFCom subscription are required."
+      },
+      "NfseFiscalResponse": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": "string"
+          },
+          "uuid": {
+            "type": "string"
+          },
+          "modelo": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "chave": {
+            "type": "string"
+          },
+          "numero_lote": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "serie_lote": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "protocolo": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "string"
+          },
+          "codigo_verificacao": {
+            "type": "string"
+          },
+          "serie_rps": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "numero_rps": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "xml": {
+            "type": "string"
+          },
+          "xml_cancelamento": {
+            "type": "string"
+          },
+          "pdf_nfse": {
+            "type": "string"
+          },
+          "pdf_nfse_status": {
+            "type": "string"
+          },
+          "pdf_rps": {
+            "type": "string"
+          },
+          "atualizado_em": {
+            "type": "string"
+          },
+          "motivo": {
+            "type": [
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "quantidade_rps": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "nfse_substituida": {
+            "type": "object",
+            "properties": {
+              "uuid": {
+                "type": "string"
+              },
+              "numero": {
+                "type": "string"
+              },
+              "codigo_verificacao": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          },
+          "info_nfse": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "uuid": {
+                  "type": "string"
+                },
+                "modelo": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "motivo": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "numero": {
+                  "type": "string"
+                },
+                "codigo_verificacao": {
+                  "type": "string"
+                },
+                "xml": {
+                  "type": "string"
+                },
+                "pdf_nfse": {
+                  "type": "string"
+                },
+                "pdf_nfse_status": {
+                  "type": "string"
+                },
+                "pdf_rps": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "log": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              }
+            ],
+            "description": "Provider-specific raw fiscal log; preserve structure and additional fields. Never include unredacted credential values in an exception."
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "uuid",
+          "modelo",
+          "status"
+        ],
+        "description": "Known individual NFSe, batch RPS and manifestation response fields. Empty fields may be omitted; status values include processing/scheduled/approved/rejected/cancelled variants and are preserved as strings. API transport success is not fiscal approval. Files are URLs; lote_rps carries per-note info_nfse. Provider/error variants are not exhaustively modeled."
+      },
+      "NfcomPaymentEvent": {
+        "type": "object",
+        "properties": {
+          "evento": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "codigo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "motivo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "protocolo_evento": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "protocolo_nfcom": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "protocolo_vinculacao": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "data_evento": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "n_seq_evento": {
+            "anyOf": [
+              {
+                "type": [
+                  "integer",
+                  "string"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pagamento": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "nPag": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "idTransacao": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "tpMeioPgto": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "CNPJReceb": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "CNPJBasePSP": {
+                    "type": [
+                      "string",
+                      "number",
+                      "boolean",
+                      "null"
+                    ]
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": true
+      },
+      "NfcomFiscalResponse": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string"
+          },
+          "chave": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "serie": {
+            "type": [
+              "integer",
+              "string",
+              "null"
+            ]
+          },
+          "nfcom": {
+            "type": [
+              "integer",
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "motivo": {
+            "type": "string"
+          },
+          "modelo": {
+            "const": "nfcom"
+          },
+          "contingencia": {
+            "type": "boolean"
+          },
+          "xml": {
+            "type": "string",
+            "format": "uri"
+          },
+          "danfecom": {
+            "type": "string",
+            "format": "uri"
+          },
+          "xml_cancelamento": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "protocolo": {
+            "type": "string"
+          },
+          "data_autorizacao": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "eventos_pagamento": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NfcomPaymentEvent"
+            }
+          },
+          "total_eventos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "consulta_eventos_pagamento": {
+            "type": "string",
+            "format": "uri"
+          },
+          "log": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "array",
+                    "items": {}
+                  }
+                ],
+                "description": "Provider-specific raw fiscal log; preserve structure and additional fields. Never include unredacted credential values in an exception."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "uuid",
+          "modelo",
+          "status"
+        ],
+        "description": "Fiscal status and URLs for the company-owned NFCom. Additional event/provider details are preserved. Approved and rejected business states can both use HTTP 200."
+      },
+      "NfcomPaymentEvents": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string"
+          },
+          "chave": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "eventos_pagamento": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NfcomPaymentEvent"
+            }
+          },
+          "total_eventos": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "uuid",
+          "status",
+          "eventos_pagamento",
+          "total_eventos"
+        ]
+      },
+      "NfseManifestationRequest": {
+        "type": "object",
+        "properties": {
+          "ambiente": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "enum": [
+              1,
+              2,
+              "1",
+              "2"
+            ]
+          },
+          "chave": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 50,
+            "description": "Nacional NFSe access key, exactly 50 characters; a UUID is not accepted."
+          },
+          "manifestador": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "enum": [
+              1,
+              2,
+              "1",
+              "2"
+            ]
+          },
+          "evento": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "enum": [
+              1,
+              2,
+              "1",
+              "2"
+            ]
+          },
+          "motivo_rejeicao": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              9,
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "9"
+            ]
+          },
+          "justificativa_rejeicao": {
+            "type": "string",
+            "minLength": 15,
+            "maxLength": 255
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "ambiente",
+          "chave",
+          "manifestador",
+          "evento"
+        ],
+        "description": "Padrão Nacional only, valid certificate required. manifestador 1 tomador / 2 intermediary; evento 1 confirmation / 2 rejection. Rejection requires motivo_rejeicao; reason 9 other requires justification. This creates a fiscal event and is excluded from read-only validation.",
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "evento": {
+                  "enum": [
+                    2,
+                    "2"
+                  ]
+                }
+              },
+              "required": [
+                "evento"
+              ]
+            },
+            "then": {
+              "required": [
+                "motivo_rejeicao"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "motivo_rejeicao": {
+                  "enum": [
+                    9,
+                    "9"
+                  ]
+                }
+              },
+              "required": [
+                "motivo_rejeicao"
+              ]
+            },
+            "then": {
+              "required": [
+                "justificativa_rejeicao"
+              ]
+            }
+          }
+        ]
+      },
+      "CteFiscalResponse": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "uuid": {
+            "type": "string"
+          },
+          "chave": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "serie": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "motivo": {
+            "type": [
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "modelo": {
+            "type": "string"
+          },
+          "xml": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "xml_cancelamento": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "log": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Provider-specific structured fiscal log. Preserve its fields and precision; never put raw credentials into an exception."
+          },
+          "cte": {
+            "type": [
+              "integer",
+              "string",
+              "null"
+            ]
+          },
+          "epec": {
+            "type": "boolean"
+          },
+          "dacte": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "eventos_pagamento": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "evento": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "codigo": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "motivo": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "protocolo_evento": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "protocolo_cte": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "protocolo_vinculacao": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "data_evento": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "n_seq_evento": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "total_eventos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "consulta_eventos_pagamento": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "uuid",
+          "status"
+        ],
+        "description": "CT-e and CT-e OS share this response envelope; modelo distinguishes them. Fiscal rejection can use HTTP200. File URLs may be null/unavailable before authorization; EPEC state does not imply a normal authorization protocol."
+      },
+      "MdfeFiscalResponse": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "uuid": {
+            "type": "string"
+          },
+          "chave": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "serie": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "motivo": {
+            "type": [
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "modelo": {
+            "type": "string"
+          },
+          "xml": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "xml_cancelamento": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "log": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Provider-specific structured fiscal log. Preserve its fields and precision; never put raw credentials into an exception."
+          },
+          "mdfe": {
+            "type": [
+              "integer",
+              "string",
+              "null"
+            ]
+          },
+          "damdfe": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "uuid",
+          "status"
+        ],
+        "description": "MDF-e status and file URLs. Keep issuer/transport mode rules separate from CT-e finality values."
+      },
+      "DceFiscalResponse": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "uuid": {
+            "type": "string"
+          },
+          "chave": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "serie": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "motivo": {
+            "type": [
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "modelo": {
+            "type": "string"
+          },
+          "xml": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "xml_cancelamento": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "log": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Provider-specific structured fiscal log. Preserve its fields and precision; never put raw credentials into an exception."
+          },
+          "numero": {
+            "type": [
+              "integer",
+              "string",
+              "null"
+            ]
+          },
+          "dace": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "uuid",
+          "status"
+        ],
+        "description": "Known unwrapped DC-e business response; null fields may be omitted."
+      },
+      "FiscalEventResponse": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string"
+          },
+          "chave": {
+            "type": "string"
+          },
+          "evento": {
+            "type": [
+              "number",
+              "string"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "motivo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "xml": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "xml_cancelamento": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "dacce": {
+            "type": "string"
+          },
+          "log": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Provider-specific structured fiscal log. Preserve its fields and precision; never put raw credentials into an exception."
+          },
+          "codigo": {
+            "type": [
+              "number",
+              "string"
+            ]
+          },
+          "protocolo_evento": {
+            "type": "string"
+          },
+          "data_evento": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "status"
+        ],
+        "description": "Known cancellation/correction/delivery/payment event fields. Not every event returns uuid; event-specific protocol/log additions remain allowed."
+      },
+      "CtePaymentEvents": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string"
+          },
+          "chave": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "eventos_pagamento": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "evento": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "codigo": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "motivo": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "protocolo_evento": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "protocolo_cte": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "protocolo_vinculacao": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "data_evento": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                },
+                "n_seq_evento": {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ]
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "total_eventos": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "uuid",
+          "status",
+          "eventos_pagamento",
+          "total_eventos"
+        ]
+      },
+      "EmitterIssueDcePayload": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "ID externo de controle da operação.",
+            "x-documented-condition": "ID externo de controle da operação.",
+            "x-documented-size": "1-100"
+          },
+          "ambiente": {
+            "type": [
+              "number",
+              "string"
+            ],
+            "pattern": "^-?(?:\\d+\\.?\\d*|\\.\\d+)(?:[eE][+-]?\\d+)?$",
+            "enum": [
+              "1",
+              1,
+              "2",
+              2
+            ],
+            "description": "Ambiente da emissão. 1 = Produção 2 = Homologação",
+            "x-documented-condition": "Ambiente da emissão. 1 = Produção 2 = Homologação",
+            "x-documented-size": "1"
+          },
+          "informacoes_adicionais": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 5000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Informações adicionais gerais da emissão. Veja também os parâmetros de observações na seção de Informações Adicionais.",
+            "x-documented-condition": "Informações adicionais gerais da emissão. Veja também os parâmetros de observações na seção de Informações Adicionais.",
+            "x-documented-size": "1-5000"
+          },
+          "informacoes_adicionais_emitente": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 5000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Texto livre com observações de interesse do emitente.",
+            "x-documented-condition": "Texto livre com observações de interesse do emitente.",
+            "x-documented-size": "1-5000"
+          },
+          "itens": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "descricao": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120,
+                  "description": "Descrição do produto, bem ou mercadoria.",
+                  "x-documented-condition": "Descrição do produto, bem ou mercadoria.",
+                  "x-documented-size": "1-120"
+                },
+                "informacoes_adicionais": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "Informações complementares do item (ex: lote, validade).",
+                  "x-documented-condition": "Informações complementares do item (ex: lote, validade).",
+                  "x-documented-size": "1-500"
+                },
+                "ncm": {
+                  "type": "string",
+                  "pattern": "^\\d{2}(\\d{6})?$",
+                  "x-conditional-rules": [
+                    "A server-side conditional or current catalog constraint also applies; this draft does not replace it."
+                  ],
+                  "description": "Código NCM (Nomenclatura Comum do Mercosul). Informe o capítulo com 2 dígitos ou o código completo com 8 dígitos, somente números.",
+                  "x-documented-condition": "Código NCM (Nomenclatura Comum do Mercosul). Informe o capítulo com 2 dígitos ou o código completo com 8 dígitos, somente números.",
+                  "x-documented-size": "2 ou 8"
+                },
+                "quantidade": {
+                  "type": [
+                    "number",
+                    "string"
+                  ],
+                  "pattern": "^-?(?:\\d+\\.?\\d*|\\.\\d+)(?:[eE][+-]?\\d+)?$",
+                  "minimum": 0.0,
+                  "maximum": 99999999999.9999,
+                  "x-sdk-numeric-minimum": "0",
+                  "x-sdk-numeric-maximum": "99999999999.9999",
+                  "description": "Quantidade do item. Aceita até 4 casas decimais.",
+                  "x-documented-condition": "Quantidade do item. Aceita até 4 casas decimais.",
+                  "x-documented-size": "13v4"
+                },
+                "valor_unitario": {
+                  "type": [
+                    "number",
+                    "string"
+                  ],
+                  "pattern": "^-?(?:\\d+\\.?\\d*|\\.\\d+)(?:[eE][+-]?\\d+)?$",
+                  "minimum": 0.0,
+                  "maximum": 10000000000000.0,
+                  "x-sdk-numeric-minimum": "0",
+                  "x-sdk-numeric-maximum": "9999999999999.99999999",
+                  "description": "Valor unitário do item. Aceita até 8 casas decimais.",
+                  "x-documented-condition": "Valor unitário do item. Aceita até 8 casas decimais.",
+                  "x-documented-size": "13v8"
+                }
+              },
+              "required": [
+                "descricao",
+                "ncm",
+                "quantidade",
+                "valor_unitario"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 999,
+            "description": "Lista de bens/mercadorias transportados (máx. 999 itens). Valor total da DC-e limitado a R$ 200.000,00.",
+            "x-documented-condition": "Lista de bens/mercadorias transportados (máx. 999 itens). Valor total da DC-e limitado a R$ 200.000,00.",
+            "x-documented-size": "1-n"
+          },
+          "observacoes": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                    "campo": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 20,
+                      "x-conditional-rules": [
+                        "required_with:observacoes"
+                      ],
+                      "description": "Identificação do campo. Exemplo: PEDIDO, ROTA, REFERENCIA.",
+                      "x-documented-condition": "Identificação do campo. Exemplo: PEDIDO, ROTA, REFERENCIA.",
+                      "x-documented-size": "1-20"
+                    },
+                    "texto": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 60,
+                      "x-conditional-rules": [
+                        "required_with:observacoes"
+                      ],
+                      "description": "Conteúdo da observação.",
+                      "x-documented-condition": "Conteúdo da observação.",
+                      "x-documented-size": "1-60"
+                    }
+                  }
+                },
+                "minItems": 1,
+                "maxItems": 10
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Lista de observações estruturadas (campo/texto). Ver estrutura do item.",
+            "x-documented-condition": "Lista de observações estruturadas (campo/texto). Ver estrutura do item.",
+            "x-documented-size": "1-10"
+          },
+          "observacoes_emitente": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                    "campo": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 20,
+                      "x-conditional-rules": [
+                        "required_with:observacoes_emitente"
+                      ],
+                      "description": "Identificação do campo. Exemplo: PEDIDO, ROTA, REFERENCIA.",
+                      "x-documented-condition": "Identificação do campo. Exemplo: PEDIDO, ROTA, REFERENCIA.",
+                      "x-documented-size": "1-20"
+                    },
+                    "texto": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 60,
+                      "x-conditional-rules": [
+                        "required_with:observacoes_emitente"
+                      ],
+                      "description": "Conteúdo da observação.",
+                      "x-documented-condition": "Conteúdo da observação.",
+                      "x-documented-size": "1-60"
+                    }
+                  }
+                },
+                "minItems": 1,
+                "maxItems": 10
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Lista de observações estruturadas do emitente (campo/texto). Ver estrutura do item.",
+            "x-documented-condition": "Lista de observações estruturadas do emitente (campo/texto). Ver estrutura do item.",
+            "x-documented-size": "1-10"
+          },
+          "origem": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "api",
+                  "webmaniabr",
+                  "woocommerce",
+                  "prestashop",
+                  "opencart",
+                  "magento"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "solicitacao": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Dados do pedido de emissão preenchidos no aplicativo do Fisco, em formato JSON. Obrigatório apenas quando o tipo de emissor da empresa estiver configurado como ‘Fisco’.",
+            "x-documented-condition": "Dados do pedido de emissão preenchidos no aplicativo do Fisco, em formato JSON. Obrigatório apenas quando o tipo de emissor da empresa estiver configurado como ‘Fisco’.",
+            "x-documented-size": "até 2000"
+          },
+          "url_notificacao": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uri",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "URL para receber notificações automáticas de status.",
+            "x-documented-condition": "URL para receber notificações automáticas de status.",
+            "x-documented-size": "até 500"
+          },
+          "cliente": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "bairro": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 60,
+                "description": "Bairro do endereço.",
+                "x-documented-condition": "Bairro do endereço.",
+                "x-documented-size": "2-60"
+              },
+              "cep": {
+                "type": "string",
+                "minLength": 8,
+                "maxLength": 8,
+                "pattern": "^[0-9]+$",
+                "x-conditional-rules": [
+                  "A server-side conditional or current catalog constraint also applies; this draft does not replace it."
+                ],
+                "description": "CEP com 8 dígitos numéricos, sem máscara.",
+                "x-documented-condition": "CEP com 8 dígitos numéricos, sem máscara.",
+                "x-documented-size": "8"
+              },
+              "cnpj": {
+                "type": "string",
+                "minLength": 14,
+                "maxLength": 14,
+                "x-conditional-rules": [
+                  "required_without_all:cliente.cpf,cliente.identificacao_alternativa",
+                  "Server cpf_cnpj validation and documented normalization apply; retain identifier strings."
+                ],
+                "description": "CNPJ do cliente. Informe apenas um: cnpj, cpf ou identificacao_alternativa.",
+                "x-documented-condition": "CNPJ do cliente. Informe apenas um: cnpj, cpf ou identificacao_alternativa.",
+                "x-documented-size": "14"
+              },
+              "codigo_municipio": {
+                "type": "string",
+                "minLength": 7,
+                "maxLength": 7,
+                "pattern": "^[0-9]+$",
+                "x-conditional-rules": [
+                  "A server-side conditional or current catalog constraint also applies; this draft does not replace it."
+                ],
+                "description": "Código IBGE do município (7 dígitos).",
+                "x-documented-condition": "Código IBGE do município (7 dígitos).",
+                "x-documented-size": "7"
+              },
+              "codigo_pais": {
+                "type": "string",
+                "pattern": "^\\d{1,4}$",
+                "x-conditional-rules": [
+                  "A server-side conditional or current catalog constraint also applies; this draft does not replace it."
+                ],
+                "description": "Código do país. Padrão: 1058 (Brasil).",
+                "x-documented-condition": "Código do país. Padrão: 1058 (Brasil).",
+                "x-documented-size": "1-4"
+              },
+              "complemento": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 60
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Complemento do endereço.",
+                "x-documented-condition": "Complemento do endereço.",
+                "x-documented-size": "1-60"
+              },
+              "cpf": {
+                "type": "string",
+                "minLength": 11,
+                "maxLength": 11,
+                "x-conditional-rules": [
+                  "required_without_all:cliente.cnpj,cliente.identificacao_alternativa",
+                  "Server cpf_cnpj validation and documented normalization apply; retain identifier strings."
+                ],
+                "description": "CPF do cliente (somente números). Informe apenas um: cnpj, cpf ou identificacao_alternativa.",
+                "x-documented-condition": "CPF do cliente (somente números). Informe apenas um: cnpj, cpf ou identificacao_alternativa.",
+                "x-documented-size": "11"
+              },
+              "email": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 80
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "E-mail do destinatário para recepção do documento.",
+                "x-documented-condition": "E-mail do destinatário para recepção do documento.",
+                "x-documented-size": "até 80"
+              },
+              "endereco": {
+                "type": "array",
+                "items": {},
+                "minItems": 1
+              },
+              "identificacao_alternativa": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 20,
+                "x-conditional-rules": [
+                  "required_without_all:cliente.cnpj,cliente.cpf"
+                ],
+                "description": "Identificação para destinatários sem CPF/CNPJ (estrangeiros, indígenas, quilombolas).",
+                "x-documented-condition": "Identificação para destinatários sem CPF/CNPJ (estrangeiros, indígenas, quilombolas).",
+                "x-documented-size": "2-20"
+              },
+              "logradouro": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 60,
+                "description": "Logradouro do endereço.",
+                "x-documented-condition": "Logradouro do endereço.",
+                "x-documented-size": "2-60"
+              },
+              "municipio": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 60,
+                "description": "Nome do município.",
+                "x-documented-condition": "Nome do município.",
+                "x-documented-size": "2-60"
+              },
+              "nome_completo": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 60,
+                "x-conditional-rules": [
+                  "required_with:cliente.cpf,cliente.identificacao_alternativa"
+                ],
+                "description": "Nome completo (pessoa física). Obrigatório quando cpf ou identificacao_alternativa for informado.",
+                "x-documented-condition": "Nome completo (pessoa física). Obrigatório quando cpf ou identificacao_alternativa for informado.",
+                "x-documented-size": "2-60"
+              },
+              "numero": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60,
+                "description": "Número do endereço. Informe S/N quando não houver número.",
+                "x-documented-condition": "Número do endereço. Informe S/N quando não houver número.",
+                "x-documented-size": "1-60"
+              },
+              "pais": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 60,
+                "description": "Nome do país. Padrão: Brasil.",
+                "x-documented-condition": "Nome do país. Padrão: Brasil.",
+                "x-documented-size": "2-60"
+              },
+              "razao_social": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 60,
+                "x-conditional-rules": [
+                  "required_with:cliente.cnpj"
+                ],
+                "description": "Razão social (pessoa jurídica). Obrigatório quando cnpj for informado.",
+                "x-documented-condition": "Razão social (pessoa jurídica). Obrigatório quando cnpj for informado.",
+                "x-documented-size": "2-60"
+              },
+              "telefone": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^\\d{7,12}$",
+                    "x-conditional-rules": [
+                      "A server-side conditional or current catalog constraint also applies; this draft does not replace it."
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Telefone com DDD, somente números.",
+                "x-documented-condition": "Telefone com DDD, somente números.",
+                "x-documented-size": "7-12"
+              },
+              "uf": {
+                "type": "string",
+                "x-conditional-rules": [
+                  "Server uf validation and documented normalization apply; retain identifier strings."
+                ],
+                "description": "Sigla da UF. Para operações com o exterior, informe EX.",
+                "x-documented-condition": "Sigla da UF. Para operações com o exterior, informe EX.",
+                "x-documented-size": "2"
+              }
+            },
+            "description": "Objeto com os dados do cliente/tomador. Consulte a seção de Cliente para as regras condicionais.",
+            "x-documented-condition": "Objeto com os dados do cliente/tomador. Consulte a seção de Cliente para as regras condicionais.",
+            "x-documented-size": "- - -"
+          },
+          "emitente": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "bairro": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 60,
+                "description": "Bairro do endereço.",
+                "x-documented-condition": "Bairro do endereço.",
+                "x-documented-size": "2-60"
+              },
+              "cep": {
+                "type": "string",
+                "minLength": 8,
+                "maxLength": 8,
+                "pattern": "^[0-9]+$",
+                "x-conditional-rules": [
+                  "A server-side conditional or current catalog constraint also applies; this draft does not replace it."
+                ],
+                "description": "CEP com 8 dígitos numéricos, sem máscara.",
+                "x-documented-condition": "CEP com 8 dígitos numéricos, sem máscara.",
+                "x-documented-size": "8"
+              },
+              "cnpj": {
+                "type": "string",
+                "minLength": 14,
+                "maxLength": 14,
+                "x-conditional-rules": [
+                  "required_without_all:emitente.cpf,emitente.identificacao_alternativa",
+                  "Server cpf_cnpj validation and documented normalization apply; retain identifier strings."
+                ],
+                "description": "CNPJ do emitente. Informe apenas um: cnpj, cpf ou identificacao_alternativa.",
+                "x-documented-condition": "CNPJ do emitente. Informe apenas um: cnpj, cpf ou identificacao_alternativa.",
+                "x-documented-size": "14"
+              },
+              "codigo_municipio": {
+                "type": "string",
+                "minLength": 7,
+                "maxLength": 7,
+                "pattern": "^[0-9]+$",
+                "x-conditional-rules": [
+                  "A server-side conditional or current catalog constraint also applies; this draft does not replace it."
+                ],
+                "description": "Código IBGE do município (7 dígitos).",
+                "x-documented-condition": "Código IBGE do município (7 dígitos).",
+                "x-documented-size": "7"
+              },
+              "complemento": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 60
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Complemento do endereço.",
+                "x-documented-condition": "Complemento do endereço.",
+                "x-documented-size": "1-60"
+              },
+              "cpf": {
+                "type": "string",
+                "minLength": 11,
+                "maxLength": 11,
+                "x-conditional-rules": [
+                  "required_without_all:emitente.cnpj,emitente.identificacao_alternativa",
+                  "Server cpf_cnpj validation and documented normalization apply; retain identifier strings."
+                ],
+                "description": "CPF do emitente (somente números). Informe apenas um: cnpj, cpf ou identificacao_alternativa.",
+                "x-documented-condition": "CPF do emitente (somente números). Informe apenas um: cnpj, cpf ou identificacao_alternativa.",
+                "x-documented-size": "11"
+              },
+              "endereco": {
+                "type": "array",
+                "items": {},
+                "minItems": 1
+              },
+              "identificacao_alternativa": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 20,
+                "x-conditional-rules": [
+                  "required_without_all:emitente.cnpj,emitente.cpf"
+                ],
+                "description": "Identificação para emitentes sem CPF/CNPJ (estrangeiros, indígenas, quilombolas).",
+                "x-documented-condition": "Identificação para emitentes sem CPF/CNPJ (estrangeiros, indígenas, quilombolas).",
+                "x-documented-size": "2-20"
+              },
+              "logradouro": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 60,
+                "description": "Logradouro do endereço.",
+                "x-documented-condition": "Logradouro do endereço.",
+                "x-documented-size": "2-60"
+              },
+              "municipio": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 60,
+                "description": "Nome do município.",
+                "x-documented-condition": "Nome do município.",
+                "x-documented-size": "2-60"
+              },
+              "nome_completo": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 60,
+                "x-conditional-rules": [
+                  "required_with:emitente.cpf,emitente.identificacao_alternativa"
+                ],
+                "description": "Nome completo (pessoa física). Obrigatório quando cpf ou identificacao_alternativa for informado.",
+                "x-documented-condition": "Nome completo (pessoa física). Obrigatório quando cpf ou identificacao_alternativa for informado.",
+                "x-documented-size": "2-60"
+              },
+              "numero": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60,
+                "description": "Número do endereço. Informe S/N quando não houver número.",
+                "x-documented-condition": "Número do endereço. Informe S/N quando não houver número.",
+                "x-documented-size": "1-60"
+              },
+              "razao_social": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 60,
+                "x-conditional-rules": [
+                  "required_with:emitente.cnpj"
+                ],
+                "description": "Razão social (pessoa jurídica). Obrigatório quando cnpj for informado.",
+                "x-documented-condition": "Razão social (pessoa jurídica). Obrigatório quando cnpj for informado.",
+                "x-documented-size": "2-60"
+              },
+              "telefone": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^\\d{7,12}$",
+                    "x-conditional-rules": [
+                      "A server-side conditional or current catalog constraint also applies; this draft does not replace it."
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Telefone com DDD, somente números.",
+                "x-documented-condition": "Telefone com DDD, somente números.",
+                "x-documented-size": "7-12"
+              },
+              "uf": {
+                "type": "string",
+                "x-conditional-rules": [
+                  "Server uf validation and documented normalization apply; retain identifier strings."
+                ],
+                "description": "Sigla da UF (ex: SP, RJ, MG).",
+                "x-documented-condition": "Sigla da UF (ex: SP, RJ, MG).",
+                "x-documented-size": "2"
+              }
+            },
+            "description": "Objeto com os dados do emitente do documento. Consulte a seção de Emitente para as regras condicionais.",
+            "x-documented-condition": "Objeto com os dados do emitente do documento. Consulte a seção de Emitente para as regras condicionais.",
+            "x-documented-size": "- - -"
+          },
+          "transporte": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "cnpj_transportadora": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "x-conditional-rules": [
+                      "Server cpf_cnpj validation and documented normalization apply; retain identifier strings."
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "CNPJ da transportadora. Utilize quando a modalidade for 2 (empresa transportadora).",
+                "x-documented-condition": "CNPJ da transportadora. Utilize quando a modalidade for 2 (empresa transportadora).",
+                "x-documented-size": "14"
+              },
+              "modalidade": {
+                "type": "string",
+                "enum": [
+                  "0",
+                  "1",
+                  "2"
+                ],
+                "description": "Modalidade de transporte. 0 = Correios 1 = Conta própria 2 = Empresa transportadora",
+                "x-documented-condition": "Modalidade de transporte. 0 = Correios 1 = Conta própria 2 = Empresa transportadora",
+                "x-documented-size": "1"
+              }
+            },
+            "required": [
+              "modalidade"
+            ],
+            "description": "Objeto com os dados de transporte. O campo modalidade define como o transporte será realizado.",
+            "x-documented-condition": "Objeto com os dados de transporte. O campo modalidade define como o transporte será realizado.",
+            "x-documented-size": "- - -"
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "ambiente",
+          "itens"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "cliente"
+                    ],
+                    "properties": {
+                      "cliente": {
+                        "required": [
+                          "cpf"
+                        ],
+                        "properties": {
+                          "cpf": {
+                            "not": {
+                              "enum": [
+                                null,
+                                "",
+                                [],
+                                {}
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "required": [
+                      "cliente"
+                    ],
+                    "properties": {
+                      "cliente": {
+                        "required": [
+                          "identificacao_alternativa"
+                        ],
+                        "properties": {
+                          "identificacao_alternativa": {
+                            "not": {
+                              "enum": [
+                                null,
+                                "",
+                                [],
+                                {}
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "then": {
+              "required": [
+                "cliente"
+              ],
+              "properties": {
+                "cliente": {
+                  "required": [
+                    "cnpj"
+                  ],
+                  "properties": {
+                    "cnpj": {}
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "cliente"
+                    ],
+                    "properties": {
+                      "cliente": {
+                        "required": [
+                          "cnpj"
+                        ],
+                        "properties": {
+                          "cnpj": {
+                            "not": {
+                              "enum": [
+                                null,
+                                "",
+                                [],
+                                {}
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "required": [
+                      "cliente"
+                    ],
+                    "properties": {
+                      "cliente": {
+                        "required": [
+                          "identificacao_alternativa"
+                        ],
+                        "properties": {
+                          "identificacao_alternativa": {
+                            "not": {
+                              "enum": [
+                                null,
+                                "",
+                                [],
+                                {}
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "then": {
+              "required": [
+                "cliente"
+              ],
+              "properties": {
+                "cliente": {
+                  "required": [
+                    "cpf"
+                  ],
+                  "properties": {
+                    "cpf": {}
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "cliente"
+                    ],
+                    "properties": {
+                      "cliente": {
+                        "required": [
+                          "cnpj"
+                        ],
+                        "properties": {
+                          "cnpj": {
+                            "not": {
+                              "enum": [
+                                null,
+                                "",
+                                [],
+                                {}
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "required": [
+                      "cliente"
+                    ],
+                    "properties": {
+                      "cliente": {
+                        "required": [
+                          "cpf"
+                        ],
+                        "properties": {
+                          "cpf": {
+                            "not": {
+                              "enum": [
+                                null,
+                                "",
+                                [],
+                                {}
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "then": {
+              "required": [
+                "cliente"
+              ],
+              "properties": {
+                "cliente": {
+                  "required": [
+                    "identificacao_alternativa"
+                  ],
+                  "properties": {
+                    "identificacao_alternativa": {}
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "cliente"
+                  ],
+                  "properties": {
+                    "cliente": {
+                      "required": [
+                        "cpf"
+                      ],
+                      "properties": {
+                        "cpf": {
+                          "not": {
+                            "enum": [
+                              null,
+                              "",
+                              [],
+                              {}
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "required": [
+                    "cliente"
+                  ],
+                  "properties": {
+                    "cliente": {
+                      "required": [
+                        "identificacao_alternativa"
+                      ],
+                      "properties": {
+                        "identificacao_alternativa": {
+                          "not": {
+                            "enum": [
+                              null,
+                              "",
+                              [],
+                              {}
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "cliente"
+              ],
+              "properties": {
+                "cliente": {
+                  "required": [
+                    "nome_completo"
+                  ],
+                  "properties": {
+                    "nome_completo": {}
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "cliente"
+                  ],
+                  "properties": {
+                    "cliente": {
+                      "required": [
+                        "cnpj"
+                      ],
+                      "properties": {
+                        "cnpj": {
+                          "not": {
+                            "enum": [
+                              null,
+                              "",
+                              [],
+                              {}
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "cliente"
+              ],
+              "properties": {
+                "cliente": {
+                  "required": [
+                    "razao_social"
+                  ],
+                  "properties": {
+                    "razao_social": {}
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "emitente"
+                    ],
+                    "properties": {
+                      "emitente": {
+                        "required": [
+                          "cpf"
+                        ],
+                        "properties": {
+                          "cpf": {
+                            "not": {
+                              "enum": [
+                                null,
+                                "",
+                                [],
+                                {}
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "required": [
+                      "emitente"
+                    ],
+                    "properties": {
+                      "emitente": {
+                        "required": [
+                          "identificacao_alternativa"
+                        ],
+                        "properties": {
+                          "identificacao_alternativa": {
+                            "not": {
+                              "enum": [
+                                null,
+                                "",
+                                [],
+                                {}
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "then": {
+              "required": [
+                "emitente"
+              ],
+              "properties": {
+                "emitente": {
+                  "required": [
+                    "cnpj"
+                  ],
+                  "properties": {
+                    "cnpj": {}
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "emitente"
+                    ],
+                    "properties": {
+                      "emitente": {
+                        "required": [
+                          "cnpj"
+                        ],
+                        "properties": {
+                          "cnpj": {
+                            "not": {
+                              "enum": [
+                                null,
+                                "",
+                                [],
+                                {}
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "required": [
+                      "emitente"
+                    ],
+                    "properties": {
+                      "emitente": {
+                        "required": [
+                          "identificacao_alternativa"
+                        ],
+                        "properties": {
+                          "identificacao_alternativa": {
+                            "not": {
+                              "enum": [
+                                null,
+                                "",
+                                [],
+                                {}
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "then": {
+              "required": [
+                "emitente"
+              ],
+              "properties": {
+                "emitente": {
+                  "required": [
+                    "cpf"
+                  ],
+                  "properties": {
+                    "cpf": {}
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "emitente"
+                    ],
+                    "properties": {
+                      "emitente": {
+                        "required": [
+                          "cnpj"
+                        ],
+                        "properties": {
+                          "cnpj": {
+                            "not": {
+                              "enum": [
+                                null,
+                                "",
+                                [],
+                                {}
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "required": [
+                      "emitente"
+                    ],
+                    "properties": {
+                      "emitente": {
+                        "required": [
+                          "cpf"
+                        ],
+                        "properties": {
+                          "cpf": {
+                            "not": {
+                              "enum": [
+                                null,
+                                "",
+                                [],
+                                {}
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "then": {
+              "required": [
+                "emitente"
+              ],
+              "properties": {
+                "emitente": {
+                  "required": [
+                    "identificacao_alternativa"
+                  ],
+                  "properties": {
+                    "identificacao_alternativa": {}
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "emitente"
+                  ],
+                  "properties": {
+                    "emitente": {
+                      "required": [
+                        "cpf"
+                      ],
+                      "properties": {
+                        "cpf": {
+                          "not": {
+                            "enum": [
+                              null,
+                              "",
+                              [],
+                              {}
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "required": [
+                    "emitente"
+                  ],
+                  "properties": {
+                    "emitente": {
+                      "required": [
+                        "identificacao_alternativa"
+                      ],
+                      "properties": {
+                        "identificacao_alternativa": {
+                          "not": {
+                            "enum": [
+                              null,
+                              "",
+                              [],
+                              {}
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "emitente"
+              ],
+              "properties": {
+                "emitente": {
+                  "required": [
+                    "nome_completo"
+                  ],
+                  "properties": {
+                    "nome_completo": {}
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "emitente"
+                  ],
+                  "properties": {
+                    "emitente": {
+                      "required": [
+                        "cnpj"
+                      ],
+                      "properties": {
+                        "cnpj": {
+                          "not": {
+                            "enum": [
+                              null,
+                              "",
+                              [],
+                              {}
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "emitente"
+              ],
+              "properties": {
+                "emitente": {
+                  "required": [
+                    "razao_social"
+                  ],
+                  "properties": {
+                    "razao_social": {}
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "observacoes"
+                  ],
+                  "properties": {
+                    "observacoes": {
+                      "not": {
+                        "enum": [
+                          null,
+                          "",
+                          [],
+                          {}
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "observacoes"
+              ],
+              "properties": {
+                "observacoes": {
+                  "type": "array",
+                  "items": {
+                    "required": [
+                      "campo"
+                    ],
+                    "properties": {
+                      "campo": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "observacoes"
+                  ],
+                  "properties": {
+                    "observacoes": {
+                      "not": {
+                        "enum": [
+                          null,
+                          "",
+                          [],
+                          {}
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "observacoes"
+              ],
+              "properties": {
+                "observacoes": {
+                  "type": "array",
+                  "items": {
+                    "required": [
+                      "texto"
+                    ],
+                    "properties": {
+                      "texto": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "observacoes_emitente"
+                  ],
+                  "properties": {
+                    "observacoes_emitente": {
+                      "not": {
+                        "enum": [
+                          null,
+                          "",
+                          [],
+                          {}
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "observacoes_emitente"
+              ],
+              "properties": {
+                "observacoes_emitente": {
+                  "type": "array",
+                  "items": {
+                    "required": [
+                      "campo"
+                    ],
+                    "properties": {
+                      "campo": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "required": [
+                    "observacoes_emitente"
+                  ],
+                  "properties": {
+                    "observacoes_emitente": {
+                      "not": {
+                        "enum": [
+                          null,
+                          "",
+                          [],
+                          {}
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "observacoes_emitente"
+              ],
+              "properties": {
+                "observacoes_emitente": {
+                  "type": "array",
+                  "items": {
+                    "required": [
+                      "texto"
+                    ],
+                    "properties": {
+                      "texto": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "description": "Explicit known field groups from the public API documentation. Additional fields and exact decimal strings are preserved. Conditional/provider/catalog rules remain server-owned and are identified individually; this schema does not claim complete business-rule validation.",
+        "x-models": [
+          "dce"
+        ],
+        "x-conditional-notes": [
+          "Issuer and client identity permit their documented CPF/CNPJ/alternative-identification branches; the address layout uses flattened fields after request normalization.",
+          "Foreign recipient address/country defaults, national country/UF consistency, item NCM/quantity/value, transport and observations are distinct conditional groups.",
+          "CSV submission and submission-envelope fields are not part of this contract."
+        ]
+      },
+      "EmitterCancelDcePayload": {
+        "type": "object",
+        "properties": {
+          "chave": {
+            "type": "string",
+            "minLength": 44,
+            "maxLength": 44,
+            "pattern": "^[0-9]{6}[A-Za-z0-9]{12}[0-9]{26}$",
+            "x-conditional-rules": [
+              "required_without:uuid",
+              "A server-side conditional or current catalog constraint also applies; this draft does not replace it."
+            ]
+          },
+          "justificativa": {
+            "type": "string",
+            "minLength": 15.0,
+            "maxLength": 255.0
+          },
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "x-conditional-rules": [
+              "required_without:chave"
+            ]
+          }
+        },
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "not": {
+                    "required": [
+                      "uuid"
+                    ],
+                    "properties": {
+                      "uuid": {
+                        "not": {
+                          "enum": [
+                            null,
+                            "",
+                            [],
+                            {}
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "chave"
+              ],
+              "properties": {
+                "chave": {}
+              }
+            }
+          },
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "not": {
+                    "required": [
+                      "chave"
+                    ],
+                    "properties": {
+                      "chave": {
+                        "not": {
+                          "enum": [
+                            null,
+                            "",
+                            [],
+                            {}
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "uuid"
+              ],
+              "properties": {
+                "uuid": {}
+              }
+            }
+          }
+        ],
+        "required": [
+          "justificativa"
+        ],
+        "description": "Explicit known field groups from the public API documentation. Additional fields and exact decimal strings are preserved. Conditional/provider/catalog rules remain server-owned and are identified individually; this schema does not claim complete business-rule validation.",
+        "x-models": [
+          "dce"
+        ],
+        "x-conditional-notes": [
+          "Issuer and client identity permit their documented CPF/CNPJ/alternative-identification branches; the address layout uses flattened fields after request normalization.",
+          "Foreign recipient address/country defaults, national country/UF consistency, item NCM/quantity/value, transport and observations are distinct conditional groups.",
+          "CSV submission and submission-envelope fields are not part of this contract."
+        ]
+      },
+      "DceDocumentedGroup282": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": "string",
+            "description": "ID de controle enviado na emissão (quando informado)."
+          },
+          "uuid": {
+            "type": "string",
+            "description": "Identificador único do DC-e."
+          },
+          "chave": {
+            "type": "string",
+            "description": "Chave de acesso do DC-e na SEFAZ."
+          },
+          "serie": {
+            "type": [
+              "number",
+              "string"
+            ],
+            "description": "Série do DC-e."
+          },
+          "numero": {
+            "type": [
+              "number",
+              "string"
+            ],
+            "description": "Número do DC-e."
+          },
+          "status": {
+            "type": "string",
+            "description": "Status atual do documento."
+          },
+          "motivo": {
+            "type": "string",
+            "description": "Motivo do status retornado."
+          },
+          "modelo": {
+            "type": "string",
+            "description": "Valor fixo dce."
+          },
+          "xml": {
+            "type": "string",
+            "description": "URL do XML autorizado."
+          },
+          "xml_cancelamento": {
+            "type": "string",
+            "description": "URL do XML de cancelamento (presente somente quando status for cancelado)."
+          },
+          "dace": {
+            "type": "string",
+            "description": "URL do DACE."
+          },
+          "log": {
+            "type": "array",
+            "items": {},
+            "description": "Log técnico da operação (envio/cancelamento)."
+          }
+        },
+        "additionalProperties": true,
+        "description": "Documented contextual fields retained for explicit operation, response or provider context; this component does not assert a wire location.",
+        "x-public-documentation": {
+          "url": "https://webmania.com.br/docs/rest-api-dce/#"
+        }
+      },
+      "DceDocumentedGroup1106": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "UUID do DC-e. Não pode ser enviado junto com chave.",
+            "x-documented-size": "36"
+          },
+          "chave": {
+            "type": "string",
+            "description": "Chave do DC-e. Não pode ser enviada junto com uuid.",
+            "x-documented-size": "44"
+          },
+          "justificativa": {
+            "type": "string",
+            "description": "Motivo do cancelamento.",
+            "x-documented-size": "15-255"
+          }
+        },
+        "additionalProperties": true,
+        "description": "Documented contextual fields retained for explicit operation, response or provider context; this component does not assert a wire location.",
+        "x-public-documentation": {
+          "url": "https://webmania.com.br/docs/rest-api-dce/#cancelar-dce"
+        }
+      },
+      "DceItemGroup": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "descricao": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Descrição do produto, bem ou mercadoria.",
+            "x-documented-condition": "Descrição do produto, bem ou mercadoria.",
+            "x-documented-size": "1-120"
+          },
+          "informacoes_adicionais": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Informações complementares do item (ex: lote, validade).",
+            "x-documented-condition": "Informações complementares do item (ex: lote, validade).",
+            "x-documented-size": "1-500"
+          },
+          "ncm": {
+            "type": "string",
+            "pattern": "^\\d{2}(\\d{6})?$",
+            "x-conditional-rules": [
+              "A server-side conditional or current catalog constraint also applies; this draft does not replace it."
+            ],
+            "description": "Código NCM (Nomenclatura Comum do Mercosul). Informe o capítulo com 2 dígitos ou o código completo com 8 dígitos, somente números.",
+            "x-documented-condition": "Código NCM (Nomenclatura Comum do Mercosul). Informe o capítulo com 2 dígitos ou o código completo com 8 dígitos, somente números.",
+            "x-documented-size": "2 ou 8"
+          },
+          "quantidade": {
+            "type": [
+              "number",
+              "string"
+            ],
+            "pattern": "^-?(?:\\d+\\.?\\d*|\\.\\d+)(?:[eE][+-]?\\d+)?$",
+            "minimum": 0.0,
+            "maximum": 99999999999.9999,
+            "x-sdk-numeric-minimum": "0",
+            "x-sdk-numeric-maximum": "99999999999.9999",
+            "description": "Quantidade do item. Aceita até 4 casas decimais.",
+            "x-documented-condition": "Quantidade do item. Aceita até 4 casas decimais.",
+            "x-documented-size": "13v4"
+          },
+          "valor_unitario": {
+            "type": [
+              "number",
+              "string"
+            ],
+            "pattern": "^-?(?:\\d+\\.?\\d*|\\.\\d+)(?:[eE][+-]?\\d+)?$",
+            "minimum": 0.0,
+            "maximum": 10000000000000.0,
+            "x-sdk-numeric-minimum": "0",
+            "x-sdk-numeric-maximum": "9999999999999.99999999",
+            "description": "Valor unitário do item. Aceita até 8 casas decimais.",
+            "x-documented-condition": "Valor unitário do item. Aceita até 8 casas decimais.",
+            "x-documented-size": "13v8"
+          }
+        },
+        "required": [
+          "descricao",
+          "ncm",
+          "quantidade",
+          "valor_unitario"
+        ]
+      }
+    }
+  }
+}
